@@ -1,9 +1,9 @@
-import { v4 as uuidv4, } from 'uuid';
-import { Boom, } from '@hapi/boom';
+import { v4 as uuidv4 } from 'uuid';
+import { Boom } from '@hapi/boom';
 import * as FileType from 'file-type';
 import * as speakeasy from 'speakeasy';
 import config from '../config/config';
-import { UserAvatar, } from '../models/UserAvatar';
+import { UserAvatar } from '../models/UserAvatar';
 
 interface IFileWithExt {
   data: Buffer;
@@ -57,7 +57,7 @@ export function responseHandler(r, h) {
         msg: r.response.message,
       })
       .code(r.response.output.statusCode);
-    return h.continue;
+    return r.response;
   }
 
   // Handle custom api error
@@ -70,7 +70,7 @@ export function responseHandler(r, h) {
         msg: r.response.output.payload.message,
       })
       .code(Math.floor(r.response.data.code / 1000));
-    return h.continue;
+    return r.response;
   }
 
   // Handle non api errors with data
@@ -83,7 +83,7 @@ export function responseHandler(r, h) {
         msg: r.response.message,
       })
       .code(r.response.output.statusCode);
-    return h.continue;
+    return r.response;
   }
 
   return h.continue;
@@ -93,7 +93,7 @@ export async function handleValidationError(r, h, err) {
   return error(
     400000,
     'Validation error',
-    err.details.map((e) => ({ field: e.context.key, reason: e.type.replace('any.', ''), }))
+    err.details.map((e) => ({ field: e.context.key, reason: e.type.replace('any.', '') }))
   );
 }
 
@@ -107,7 +107,7 @@ export const getFileExt = async (file: Buffer): Promise<IFileWithExt> => {
     throw error(400000, 'This file type is now allowed', null);
   }
 
-  return { data: file, fileExt: fileExt.ext, };
+  return { data: file, fileExt: fileExt.ext };
 };
 
 export const saveImage = async (userId: string, file: Buffer) => {
@@ -119,8 +119,7 @@ export const saveImage = async (userId: string, file: Buffer) => {
     //   userId,
     //   ext: fileWithExt.fileExt,
     // });
-  }
-  catch (err) {
+  } catch (err) {
     throw err;
   }
 };
