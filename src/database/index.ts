@@ -3,10 +3,24 @@ import config from '../config/config';
 import { User } from './User';
 import { Session } from './Session';
 import { UserAvatar } from './UserAvatar';
+import { Plugin, Server } from '@hapi/hapi';
+import * as pkg from '../../package.json'
 
-const sequelize = new Sequelize(config.dbLink, {
-  dialect: 'postgres',
-  models: [User, Session, UserAvatar],
-});
-sequelize.sync();
-export default sequelize;
+
+export const Database: Plugin<any> = {
+  name: 'database',
+  version: pkg.version,
+  register: async (server: Server, options: any) => {
+    const { test } = options
+    const sequelize: Sequelize = new Sequelize(config.dbLink, {
+      dialect: 'postgres',
+      models: [User, Session, UserAvatar],
+    });
+    
+    if(test) {
+
+    } else {
+
+    }
+  }
+}
