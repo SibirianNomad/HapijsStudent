@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize-typescript'
 import { Plugin, Server } from '@hapi/hapi'
 import * as pkg from '../../package.json'
-import { UserModel } from './user'
+import { CreateUser, UserDto, UserModel } from './user'
 import { SessionModel } from './session'
 
 export type DatabaseOptions = {
@@ -70,5 +70,39 @@ export const Database: Plugin<DatabaseOptions> = {
     }
 
     server.expose(sequelize)
+    server.method(createUser.name, createUser)
+    server.method(getUsers.name, getUsers)
+    server.method(getUser.name, getUser)
   }
+}
+
+/**
+ * Create user
+ * @param user user data
+ * @returns created user
+ */
+const createUser = async (user: CreateUser): Promise<UserDto> => {
+  return await UserModel.create(user, { raw: true })
+}
+
+/**
+ * Get all users
+ * @returns all users
+ */
+const getUsers = async (): Promise<UserDto[]> => {
+  return await UserModel.findAll({
+    raw: true
+  })
+}
+
+/**
+ * Get user that matches provided search query
+ * @param user search query
+ * @returns User that matches search query or null if not found
+ */
+const getUser = async (user: Pick<UserDto, 'email'>): Promise<UserDto | null> => {
+  return await UserModel.findOne({
+    where: { email: user.email },
+    raw: true
+  })
 }

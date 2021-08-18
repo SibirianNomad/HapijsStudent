@@ -9,7 +9,9 @@ export interface Session {
   userId: string
 }
 
-@Table
+@Table({
+  tableName: 'sessions'
+})
 export class SessionModel extends Model<Session> {
   @Column({
     primaryKey: true,

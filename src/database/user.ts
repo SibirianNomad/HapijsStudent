@@ -6,7 +6,7 @@ import * as uuid from 'uuid'
 /**
  * user data model
  */
-export interface User {
+export interface UserDto {
   id: string
   email: string
   password: string
@@ -16,7 +16,7 @@ export interface User {
 /**
  * create user data model
  */
-export type CreateUser = Omit<User, 'id'>
+export type CreateUser = Omit<UserDto, 'id' | 'password'>
 
 /**
  * update user data model
@@ -35,8 +35,10 @@ export type UpdateUser = Partial<CreateUser>
     }
   }
 }))
-@Table
-export class UserModel extends Model<User, CreateUser> implements User {
+@Table({
+  tableName: 'users'
+})
+export class UserModel extends Model<UserDto, CreateUser> implements UserDto {
   @Column({
     primaryKey: true,
     type: DataType.STRING,
