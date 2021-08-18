@@ -68,5 +68,7 @@ export const Database: Plugin<DatabaseOptions> = {
         models: [UserModel, SessionModel]
       })
     }
+
+    server.expose(sequelize)
   }
 }
