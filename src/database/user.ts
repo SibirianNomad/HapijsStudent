@@ -1,7 +1,9 @@
 import {
-  Column, DataType, Model, Scopes, Table
+  AllowNull,
+  Column, CreatedAt, DataType, Default, HasMany, Model, PrimaryKey, Scopes, Table, Unique, UpdatedAt
 } from 'sequelize-typescript'
 import * as uuid from 'uuid'
+import { SessionModel } from './session'
 
 /**
  * user data model
@@ -11,12 +13,14 @@ export interface UserDto {
   email: string
   password: string
   avatar: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 /**
  * create user data model
  */
-export type CreateUser = Omit<UserDto, 'id' | 'password'>
+export type CreateUser = Omit<UserDto, 'id' | 'password' | 'avatar' | 'createdAt' | 'updatedAt'>
 
 /**
  * update user data model
@@ -28,37 +32,36 @@ export type UpdateUser = Partial<CreateUser>
     attributes: {
       exclude: ['password']
     }
-  },
-  withPassword: {
-    attributes: {
-      include: ['password']
-    }
   }
 }))
 @Table({
   tableName: 'users'
 })
 export class UserModel extends Model<UserDto, CreateUser> implements UserDto {
-  @Column({
-    primaryKey: true,
-    type: DataType.STRING,
-    defaultValue: uuid.v4()
-  })
+  @Column(DataType.STRING)
+  @Default(uuid.v4())
+  @PrimaryKey
   id: string;
 
-  @Column({
-    type: DataType.STRING,
-    unique: true
-  })
+  @Column(DataType.STRING)
+  @Unique
+  @AllowNull(false)
   email: string;
 
-  @Column({
-    type: DataType.STRING
-  })
+  @Column(DataType.STRING)
+  @AllowNull(true)
   avatar: string;
 
-  @Column({
-    type: DataType.STRING
-  })
+  @Column(DataType.STRING)
+  @AllowNull(false)
   password: string;
+
+  @HasMany(() => SessionModel)
+  sessions: SessionModel[]
+
+  @CreatedAt
+  createdAt: Date;
+
+  @UpdatedAt
+  updatedAt: Date;
 }

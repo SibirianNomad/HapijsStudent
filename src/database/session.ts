@@ -1,5 +1,5 @@
 import {
-  Table, BelongsTo, Column, DataType, ForeignKey, Model
+  Table, Column, DataType, ForeignKey, Model
 } from 'sequelize-typescript'
 import { UserModel } from './user'
 import * as uuid from 'uuid'
@@ -23,7 +23,4 @@ export class SessionModel extends Model<Session> {
   @ForeignKey(() => UserModel)
   @Column(DataType.STRING)
   userId: string;
-
-  @BelongsTo(() => UserModel)
-  user: UserModel;
 }

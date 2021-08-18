@@ -82,7 +82,10 @@ export const Database: Plugin<DatabaseOptions> = {
  * @returns created user
  */
 const createUser = async (user: CreateUser): Promise<UserDto> => {
-  return await UserModel.create(user, { raw: true })
+  return await UserModel.create(user, {
+    raw: true,
+    include: [SessionModel]
+  })
 }
 
 /**
@@ -91,6 +94,7 @@ const createUser = async (user: CreateUser): Promise<UserDto> => {
  */
 const getUsers = async (): Promise<UserDto[]> => {
   return await UserModel.findAll({
+    include: [SessionModel],
     raw: true
   })
 }
@@ -103,6 +107,7 @@ const getUsers = async (): Promise<UserDto[]> => {
 const getUser = async (user: Pick<UserDto, 'email'>): Promise<UserDto | null> => {
   return await UserModel.findOne({
     where: { email: user.email },
+    include: [SessionModel],
     raw: true
   })
 }
