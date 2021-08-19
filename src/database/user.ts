@@ -4,7 +4,6 @@ import {
   CreatedAt,
   DataType,
   Default,
-  HasMany,
   Model,
   PrimaryKey,
   Scopes,
@@ -13,7 +12,6 @@ import {
   UpdatedAt
 } from 'sequelize-typescript'
 import * as uuid from 'uuid'
-import { SessionModel } from './session'
 
 /**
  * user data model
@@ -65,9 +63,6 @@ export class UserModel extends Model<UserDto, CreateUser> implements UserDto {
   @Column(DataType.STRING)
   @AllowNull(false)
   password: string
-
-  @HasMany(() => SessionModel)
-  sessions: SessionModel[]
 
   @CreatedAt
   createdAt: Date

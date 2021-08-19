@@ -20,3 +20,12 @@ export const UserSchema = (): Joi.ObjectSchema<UserDto> =>
     createdAt: Joi.date(),
     updatedAt: Joi.date()
   })
+
+export type LoginDto = Pick<UserDto, 'email' | 'password'>
+
+export const LoginSchema = (): Joi.ObjectSchema<LoginDto> => Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().required()
+})
+
+export type Register = Exclude<Pick<UserDto, 'email' | 'password'>, 'confirmPassword'>

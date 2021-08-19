@@ -2,7 +2,6 @@ import { Sequelize } from 'sequelize-typescript'
 import { Plugin, Server } from '@hapi/hapi'
 import * as pkg from '../../package.json'
 import { CreateUser, UserDto, UserModel } from './user'
-import { SessionModel } from './session'
 
 export type DatabaseOptions = {
   /**
@@ -49,7 +48,7 @@ export const Database: Plugin<DatabaseOptions> = {
     let sequelize: Sequelize
     if (test) {
       sequelize = new Sequelize('sqlite::memory:', {
-        models: [UserModel, SessionModel],
+        models: [UserModel],
         logging: false,
         sync: {
           force: true,
@@ -65,13 +64,12 @@ export const Database: Plugin<DatabaseOptions> = {
         database,
         username,
         password,
-        models: [UserModel, SessionModel]
+        models: [UserModel]
       })
     }
 
     server.expose(sequelize)
     server.method(createUser.name, createUser)
-    server.method(getUsers.name, getUsers)
     server.method(getUser.name, getUser)
   }
 }
@@ -83,18 +81,6 @@ export const Database: Plugin<DatabaseOptions> = {
  */
 const createUser = async (user: CreateUser): Promise<UserDto> => {
   return await UserModel.create(user, {
-    raw: true,
-    include: [SessionModel]
-  })
-}
-
-/**
- * Get all users
- * @returns all users
- */
-const getUsers = async (): Promise<UserDto[]> => {
-  return await UserModel.findAll({
-    include: [SessionModel],
     raw: true
   })
 }
@@ -107,7 +93,6 @@ const getUsers = async (): Promise<UserDto[]> => {
 const getUser = async (user: Pick<UserDto, 'email'>): Promise<UserDto | null> => {
   return await UserModel.findOne({
     where: { email: user.email },
-    include: [SessionModel],
     raw: true
   })
 }
