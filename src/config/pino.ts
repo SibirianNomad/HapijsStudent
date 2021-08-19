@@ -1,32 +1,32 @@
 export const pinoConfig = (prettify?: boolean) => ({
   prettyPrint: prettify
     ? {
-      colorize: true,
-      crlf: false,
-      jsonPretty: false,
-      translateTime: 'yyyy-mm-dd HH:MM:ss',
-      ignore: 'pid,hostname,v,tags,data',
-      messageFormat: '{data}',
-      customPrettifiers: {
-        response: { messageFormat: '{req.url} - {req.method} - code:{req.statusCode}', },
-      },
-    }
+        colorize: true,
+        crlf: false,
+        jsonPretty: false,
+        translateTime: 'yyyy-mm-dd HH:MM:ss',
+        ignore: 'pid,hostname,v,tags,data',
+        messageFormat: '{data}',
+        customPrettifiers: {
+          response: { messageFormat: '{req.url} - {req.method} - code:{req.statusCode}' }
+        }
+      }
     : false,
   serializers: {
-    req: function customReqSerializer(req) {
+    req: function customReqSerializer (req) {
       return {
         method: req.method,
         url: req.url,
-        payload: req.payload,
-      };
+        payload: req.payload
+      }
     },
-    res: function customResSerializer(res) {
+    res: function customResSerializer (res) {
       return {
         code: res.statusCode,
         payload: res.result,
-        data: res.data,
-      };
-    },
+        data: res.data
+      }
+    }
   },
   logPayload: true,
   logEvents: ['response', 'request'],
@@ -34,18 +34,18 @@ export const pinoConfig = (prettify?: boolean) => ({
   redact: {
     // Censoring user's credentials, auth-tokens and file's Buffer representation in payload.
     paths: ['payload.password', 'req.headers.authorization', 'payload.avatarImage'],
-    censor: '***',
+    censor: '***'
   },
   formatters: {
-    level() {
-      return {};
+    level () {
+      return {}
     },
-    bindings() {
-      return {};
+    bindings () {
+      return {}
     },
-    tags() {
-      return {};
-    },
+    tags () {
+      return {}
+    }
   },
-  timestamp: () => `,"time":"${new Date(Date.now()).toLocaleString()}"`,
-});
+  timestamp: () => `,"time":"${new Date(Date.now()).toLocaleString()}"`
+})

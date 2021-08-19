@@ -1,11 +1,9 @@
-import {
-  Table, Column, DataType, ForeignKey, Model
-} from 'sequelize-typescript'
+import { Table, Column, DataType, ForeignKey, Model } from 'sequelize-typescript'
 import { UserModel } from './user'
 import * as uuid from 'uuid'
 
 export interface Session {
-  id: string;
+  id: string
   userId: string
 }
 
@@ -18,9 +16,9 @@ export class SessionModel extends Model<Session> {
     type: DataType.STRING,
     defaultValue: uuid.v4()
   })
-  id: string;
+  id: string
 
   @ForeignKey(() => UserModel)
   @Column(DataType.STRING)
-  userId: string;
+  userId: string
 }

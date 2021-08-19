@@ -1,6 +1,6 @@
-import * as main from './server';
+import * as main from './server'
 
-(async function (): Promise<void> {
+;(async function (): Promise<void> {
   try {
     const server = await main.createServer()
 

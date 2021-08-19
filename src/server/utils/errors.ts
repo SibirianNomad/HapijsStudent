@@ -6,5 +6,5 @@ export enum Errors {
   TokenInvalid = 401002,
   SessionNotFound = 401003,
   // Not found (404)
-  NotFound = 404000,
+  NotFound = 404000
 }

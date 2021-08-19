@@ -1,6 +1,16 @@
 import {
   AllowNull,
-  Column, CreatedAt, DataType, Default, HasMany, Model, PrimaryKey, Scopes, Table, Unique, UpdatedAt
+  Column,
+  CreatedAt,
+  DataType,
+  Default,
+  HasMany,
+  Model,
+  PrimaryKey,
+  Scopes,
+  Table,
+  Unique,
+  UpdatedAt
 } from 'sequelize-typescript'
 import * as uuid from 'uuid'
 import { SessionModel } from './session'
@@ -41,27 +51,27 @@ export class UserModel extends Model<UserDto, CreateUser> implements UserDto {
   @Column(DataType.STRING)
   @Default(uuid.v4())
   @PrimaryKey
-  id: string;
+  id: string
 
   @Column(DataType.STRING)
   @Unique
   @AllowNull(false)
-  email: string;
+  email: string
 
   @Column(DataType.STRING)
   @AllowNull(true)
-  avatar: string;
+  avatar: string
 
   @Column(DataType.STRING)
   @AllowNull(false)
-  password: string;
+  password: string
 
   @HasMany(() => SessionModel)
   sessions: SessionModel[]
 
   @CreatedAt
-  createdAt: Date;
+  createdAt: Date
 
   @UpdatedAt
-  updatedAt: Date;
+  updatedAt: Date
 }
