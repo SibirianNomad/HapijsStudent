@@ -5,7 +5,7 @@
   "scripts": {
     "clean": "rimraf ./build",
     "build": "npm run clean && tsc",
-    "start:dev": "npm run build && concurrently -k \"tsc -w\" \"nodemon ./build/main.js\"",
+    "start:dev": "npm run build && concurrently -k \"tsc -w\" \"nodemon ./build/src/main.js\"",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint '{src,test}/**/*.ts' --quiet --fix",
     "test": "lab --sourcemaps --leaks --transform node_modules/lab-transform-typescript -v ./test/*.test.ts",
@@ -26,6 +26,7 @@
     "hapi-cors": "^1.0.3",
     "hapi-pino": "^8.3.0",
     "hapi-pulse": "^3.0.0",
+    "hapi-swagger": "^14.2.4",
     "lab-transform-typescript": "^3.0.1",
     "reflect-metadata": "^0.1.13",
     "sequelize": "^6.6.5",

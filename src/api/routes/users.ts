@@ -1,14 +1,14 @@
 import { ServerRoute } from '@hapi/hapi'
-import { LoginSchema } from '../schemes'
+import { AuthenticationResultSchema, LoginSchema, RegisterSchema, UserSchema } from '../schemes'
 import * as users from './handlers/users'
 
 export const register: ServerRoute = {
   method: 'POST',
-  path: '/register',
+  path: '/accounts/register',
   handler: users.register,
   options: {
     id: 'register',
-    tags: ['api', 'register'],
+    tags: ['api', 'Accounts'],
     payload: {
       allow: ['application/json', 'application/*+json'],
       parse: true,
@@ -16,18 +16,21 @@ export const register: ServerRoute = {
     },
     validate: {
       failAction: 'error',
-      payload: null
+      payload: RegisterSchema()
+    },
+    response: {
+      schema: AuthenticationResultSchema()
     }
   }
 }
 
 export const login: ServerRoute = {
   method: 'POST',
-  path: '/login',
+  path: '/accounts/login',
   handler: users.login,
   options: {
     id: 'login',
-    tags: ['api', 'login'],
+    tags: ['api', 'Accounts'],
     payload: {
       allow: ['application/json', 'application/*+json'],
       parse: true,
@@ -36,16 +39,25 @@ export const login: ServerRoute = {
     validate: {
       failAction: 'error',
       payload: LoginSchema()
+    },
+    response: {
+      schema: AuthenticationResultSchema()
     }
   }
 }
 
 export const profile: ServerRoute = {
   method: 'GET',
-  path: '/profile',
+  path: '/accounts',
   handler: users.profile,
   options: {
-    id: 'login',
-    tags: ['api', 'login']
+    id: 'profile',
+    tags: ['api', 'Accounts'],
+    validate: {
+      failAction: 'error'
+    },
+    response: {
+      schema: UserSchema()
+    }
   }
 }
