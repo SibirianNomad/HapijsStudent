@@ -102,5 +102,5 @@ export const getUser = async (user: Pick<UserDto, 'email' | 'password'>): Promis
 }
 
 export const isUniqueEmailAddress = async (email: string): Promise<boolean> => {
-  return (await UserModel.count({ where: { email } })) > 0
+  return (await UserModel.count({ where: { email } })) === 0
 }

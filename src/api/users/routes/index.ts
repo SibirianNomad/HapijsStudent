@@ -8,7 +8,7 @@ export const register: ServerRoute = {
   handler: users.register,
   options: {
     id: 'register',
-    tags: ['api', 'Accounts'],
+    tags: ['api', 'Users'],
     payload: {
       allow: ['application/json', 'application/*+json'],
       parse: true,
@@ -30,7 +30,7 @@ export const login: ServerRoute = {
   handler: users.login,
   options: {
     id: 'login',
-    tags: ['api', 'Accounts'],
+    tags: ['api', 'Users'],
     payload: {
       allow: ['application/json', 'application/*+json'],
       parse: true,
@@ -52,7 +52,7 @@ export const profile: ServerRoute = {
   handler: users.profile,
   options: {
     id: 'profile',
-    tags: ['api', 'Accounts'],
+    tags: ['api', 'Users'],
     validate: {
       failAction: 'error'
     },

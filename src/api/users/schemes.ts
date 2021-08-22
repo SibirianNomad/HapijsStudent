@@ -35,7 +35,6 @@ export const RegisterSchema = (): Joi.ObjectSchema<RegisterDto> => Joi.object({
 }).label('Register')
 
 export const AuthenticationResultSchema = (): Joi.ObjectSchema<RegisterDto> => Joi.object({
-  token: Joi.string().email().required(),
-  refreshToken: Joi.string().required(),
-  user: UserSchema
+  token: Joi.string().required(),
+  refreshToken: Joi.string().required()
 }).label('AuthenticationResult')

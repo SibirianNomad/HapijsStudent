@@ -14,10 +14,14 @@ export const register = async (request: Request, reply: ResponseToolkit): Promis
     return reply.response({ ok: false, error: 'e-mail address is registered with an existing account.' }).code(401)
   }
 
-  const hashedPassword = await bcrypt.hash(password, email)
+  const hashedPassword = await bcrypt.hash(password, 1)
+  // eslint-disable-next-line no-unused-vars
   const user = await createUser({ email, password: hashedPassword })
 
-  return reply.response({ token: '', refreshToken: '', user }).code(200)
+  /* TODO: create jwt access token from user data */
+  /* TODO: create jwt refresh token from user data */
+
+  return reply.response({ token: '', refreshToken: '' }).code(200)
 }
 
 export const login = async (request: Request, reply: ResponseToolkit): Promise<ResponseObject> => {
@@ -28,7 +32,7 @@ export const login = async (request: Request, reply: ResponseToolkit): Promise<R
   const user = await getUser(email, hashedPassword)
 
   if (user !== null) {
-    return reply.response({ token: '', refreshToken: '', user }).code(200)
+    return reply.response({ token: '', refreshToken: '' }).code(200)
   }
 
   return reply.response({ ok: false, error: 'invalid credentials' }).code(401)
