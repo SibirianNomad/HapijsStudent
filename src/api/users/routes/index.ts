@@ -4,7 +4,7 @@ import * as users from './handlers/users'
 
 export const register: ServerRoute = {
   method: 'POST',
-  path: '/accounts/register',
+  path: '/users/register',
   handler: users.register,
   options: {
     id: 'register',
@@ -26,7 +26,7 @@ export const register: ServerRoute = {
 
 export const login: ServerRoute = {
   method: 'POST',
-  path: '/accounts/login',
+  path: '/users/login',
   handler: users.login,
   options: {
     id: 'login',
@@ -48,7 +48,7 @@ export const login: ServerRoute = {
 
 export const profile: ServerRoute = {
   method: 'GET',
-  path: '/accounts',
+  path: '/users',
   handler: users.profile,
   options: {
     id: 'profile',

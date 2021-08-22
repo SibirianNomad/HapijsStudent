@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize-typescript'
 import { Plugin, Server } from '@hapi/hapi'
 import * as pkg from '../../package.json'
-import { CreateUser, UserDto, UserModel } from './user'
+import { createUser, getUser, UserModel } from './user'
 
 export type DatabaseOptions = {
   /**
@@ -72,27 +72,4 @@ export const Database: Plugin<DatabaseOptions> = {
     server.method(createUser.name, createUser)
     server.method(getUser.name, getUser)
   }
-}
-
-/**
- * Create user
- * @param user user data
- * @returns created user
- */
-const createUser = async (user: CreateUser): Promise<UserDto> => {
-  return await UserModel.create(user, {
-    raw: true
-  })
-}
-
-/**
- * Get user that matches provided search query
- * @param user search query
- * @returns User that matches search query or null if not found
- */
-const getUser = async (user: Pick<UserDto, 'email'>): Promise<UserDto | null> => {
-  return await UserModel.findOne({
-    where: { email: user.email },
-    raw: true
-  })
 }

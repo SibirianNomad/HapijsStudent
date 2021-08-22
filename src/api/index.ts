@@ -3,7 +3,7 @@ import * as Inert from '@hapi/inert'
 import * as Vision from '@hapi/vision'
 import * as HapiSwagger from 'hapi-swagger'
 import * as pkg from '../../package.json'
-import { login, profile, register } from './routes/users'
+import { Users } from './users'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Api: Plugin<any> = {
@@ -29,6 +29,6 @@ export const Api: Plugin<any> = {
       }
     ])
 
-    server.route([register, login, profile])
+    server.register(Users)
   }
 }

@@ -28,7 +28,7 @@ export interface UserDto {
 /**
  * create user data model
  */
-export type CreateUser = Omit<UserDto, 'id' | 'password' | 'avatar' | 'createdAt' | 'updatedAt'>
+export type CreateUser = Omit<UserDto, 'id' | 'avatar' | 'createdAt' | 'updatedAt'>
 
 /**
  * update user data model
@@ -69,4 +69,38 @@ export class UserModel extends Model<UserDto, CreateUser> implements UserDto {
 
   @UpdatedAt
   updatedAt: Date
+}
+
+/**
+ * Create user
+ * @param user user data
+ * @returns created user
+ */
+export const createUser = async (user: CreateUser): Promise<UserDto> => {
+  return await UserModel.create(user, {
+    raw: true
+  })
+}
+
+/**
+ * Get user that matches provided search query
+ * @param user search query
+ * @returns User that matches search query or null if not found
+ */
+export const getUser = async (user: Pick<UserDto, 'email' | 'password'>): Promise<UserDto | null> => {
+  if (user.password) {
+    return await UserModel.findOne({
+      where: { email: user.email, password: user.password },
+      raw: true
+    })
+  }
+
+  return await UserModel.findOne({
+    where: { email: user.email },
+    raw: true
+  })
+}
+
+export const isUniqueEmailAddress = async (email: string): Promise<boolean> => {
+  return (await UserModel.count({ where: { email } })) > 0
 }

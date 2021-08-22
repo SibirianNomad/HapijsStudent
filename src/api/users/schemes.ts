@@ -26,7 +26,7 @@ export const LoginSchema = (): Joi.ObjectSchema<LoginDto> => Joi.object({
   password: Joi.string().required()
 }).label('Login')
 
-export type RegisterDto = Exclude<Pick<UserDto, 'email' | 'password'>, 'confirmPassword'>
+export type RegisterDto = Pick<UserDto, 'email' | 'password'> & { 'confirmPassword': string }
 
 export const RegisterSchema = (): Joi.ObjectSchema<RegisterDto> => Joi.object({
   email: Joi.string().email().required(),
@@ -36,5 +36,6 @@ export const RegisterSchema = (): Joi.ObjectSchema<RegisterDto> => Joi.object({
 
 export const AuthenticationResultSchema = (): Joi.ObjectSchema<RegisterDto> => Joi.object({
   token: Joi.string().email().required(),
-  refreshToken: Joi.string().required()
+  refreshToken: Joi.string().required(),
+  user: UserSchema
 }).label('AuthenticationResult')
