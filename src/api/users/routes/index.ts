@@ -1,5 +1,5 @@
 import { ServerRoute } from '@hapi/hapi'
-import { AuthenticationResultSchema, LoginSchema, RegisterSchema, UserSchema } from '../schemes'
+import { AuthenticationResultSchema, LoginSchema, RefreshTokenSchema, RegisterSchema, UserSchema } from '../schemes'
 import * as users from './handlers/users'
 
 export const register: ServerRoute = {
@@ -39,6 +39,28 @@ export const login: ServerRoute = {
     validate: {
       failAction: 'error',
       payload: LoginSchema()
+    },
+    response: {
+      schema: AuthenticationResultSchema()
+    }
+  }
+}
+
+export const refresh: ServerRoute = {
+  method: 'PATCH',
+  path: '/users/refresh',
+  handler: users.refreshToken,
+  options: {
+    id: 'login',
+    tags: ['api', 'Users'],
+    payload: {
+      allow: ['application/json', 'application/*+json'],
+      parse: true,
+      failAction: 'error'
+    },
+    validate: {
+      failAction: 'error',
+      payload: RefreshTokenSchema()
     },
     response: {
       schema: AuthenticationResultSchema()

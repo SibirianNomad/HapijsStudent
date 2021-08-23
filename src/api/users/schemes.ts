@@ -38,3 +38,7 @@ export const AuthenticationResultSchema = (): Joi.ObjectSchema<RegisterDto> => J
   token: Joi.string().required(),
   refreshToken: Joi.string().required()
 }).label('AuthenticationResult')
+
+export const RefreshTokenSchema = (): Joi.ObjectSchema<{ refreshToken: string }> => Joi.object({
+  refreshToken: Joi.string().required()
+})

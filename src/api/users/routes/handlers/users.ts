@@ -38,6 +38,10 @@ export const login = async (request: Request, reply: ResponseToolkit): Promise<R
   return reply.response({ ok: false, error: 'invalid credentials' }).code(401)
 }
 
+export const refreshToken = async (request: Request, reply: ResponseToolkit): Promise<ResponseObject> => {
+  return reply.response()
+}
+
 export const profile = async (request: Request, reply: ResponseToolkit): Promise<ResponseObject> => {
   const authorization = request.headers.authorization
   if (!authorization) {
