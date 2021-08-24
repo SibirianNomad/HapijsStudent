@@ -7,7 +7,6 @@ export const Users: Plugin<any> = {
   version: '1',
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: async (server: Server, options: any) => {
-    // server.realm.modifiers.route.prefix = '/api/v1/users'
     server.route([register, login, profile, refresh])
   }
 }

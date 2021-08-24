@@ -12,6 +12,7 @@ export const Api: Plugin<any> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: async (server: Server, options: any) => {
     server.realm.modifiers.route.prefix = '/api'
+
     await server.register([
       Inert,
       Vision,
@@ -29,6 +30,6 @@ export const Api: Plugin<any> = {
       }
     ])
 
-    server.register(Users)
+    server.register(Users, { routes: { prefix: '/v1' } })
   }
 }
