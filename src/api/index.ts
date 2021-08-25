@@ -1,6 +1,4 @@
-import { Plugin, Server } from '@hapi/hapi'
-import * as Inert from '@hapi/inert'
-import * as Vision from '@hapi/vision'
+import { Plugin, ResponseToolkit, Server } from '@hapi/hapi'
 import * as HapiSwagger from 'hapi-swagger'
 import * as pkg from '../../package.json'
 import { Users } from './users'
@@ -13,22 +11,25 @@ export const Api: Plugin<any> = {
   register: async (server: Server, options: any) => {
     server.realm.modifiers.route.prefix = '/api'
 
-    await server.register([
-      Inert,
-      Vision,
-      {
-        plugin: HapiSwagger,
-        options: {
-          info: {
-            title: 'API Documentation',
-            version: pkg.version
-          },
-          basePath: '/api',
-          grouping: 'tags'
+    await server.register({
+      plugin: HapiSwagger,
+      options: {
+        info: {
+          title: 'API Documentation',
+          version: pkg.version
+        },
+        basePath: '/api',
+        grouping: 'tags'
 
-        }
       }
-    ])
+    })
+
+    /* default handler for non-existing routes */
+    server.route({
+      method: '*',
+      path: '*',
+      handler: (_, reply: ResponseToolkit) => reply.response().code(404)
+    })
 
     server.register(Users, { routes: { prefix: '/v1' } })
   }
