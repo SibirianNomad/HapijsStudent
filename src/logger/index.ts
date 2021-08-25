@@ -16,7 +16,7 @@ export const Logging: Plugin<Options> = {
           crlf: true
         },
         redact: ['req.headers.authorization'],
-        timestamp: () => `${new Date(Date.now()).toLocaleString()}`
+        timestamp: () => `, time: "${new Date(Date.now()).toLocaleString()}"`
       } as unknown
     })
   }
