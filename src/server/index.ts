@@ -72,12 +72,15 @@ export const createServer = async (): Promise<Hapi.Server> => {
   })
 
   await server.register({
-    plugin: Websocket,
-    options: {}
     /* Write unit tests to test websockets or
      * use https://mdenushev.github.io/nes-cli/
      * to test ws connections
      */
+    plugin: Websocket,
+    options: {},
+    routes: {
+      prefix: '/ws'
+    }
   })
 
   return server
