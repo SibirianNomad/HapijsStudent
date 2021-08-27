@@ -18,7 +18,7 @@ export const Websocket: Plugin<WebsocketOptions> = {
     })
 
     /* TODO: add ws subscriptions here */
-    await server.subscription('example', {
+    await server.subscription('/example', {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       filter: (path: string, message: any, options: any) => true
     })
