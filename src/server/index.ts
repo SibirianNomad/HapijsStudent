@@ -5,15 +5,15 @@ import * as HapiPulse from 'hapi-pulse'
 import * as Qs from 'qs'
 import { Api } from '../api'
 import { Auth } from '../auth'
-import config from '../config/config'
+import * as config from '../config'
 import { Database, DatabaseOptions } from '../database'
 import { Websocket } from '../websocket'
 import { responseFilter } from './responseFilter'
 
 export const createServer = async (): Promise<Hapi.Server> => {
   const server = new Hapi.Server({
-    port: config.server.port,
-    host: config.server.host,
+    port: config.Server.port,
+    host: config.Server.host,
     query: {
       // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       parser: (query) => Qs.parse(query)
