@@ -51,7 +51,7 @@ export const refresh: ServerRoute = {
   path: '/users/refresh',
   handler: users.refreshToken,
   options: {
-    id: 'login',
+    id: 'refresh',
     tags: ['api', 'Users'],
     payload: {
       allow: ['application/json', 'application/*+json'],
