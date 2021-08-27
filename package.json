@@ -23,7 +23,6 @@
     "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
     "hapi-auth-bearer-token": "^8.0.0",
-    "hapi-cors": "^1.0.3",
     "hapi-pino": "^8.3.0",
     "hapi-pulse": "^3.0.0",
     "hapi-swagger": "^14.2.4",
