@@ -4,7 +4,7 @@ import * as pkg from '../../package.json'
 
 export type Options = {}
 
-export const Logging: Plugin<Options> = {
+export const Logger: Plugin<Options> = {
   name: 'logger',
   version: pkg.version,
   register: (server: Server, options: Options) => {

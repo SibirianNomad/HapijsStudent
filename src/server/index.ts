@@ -7,6 +7,7 @@ import { Api } from '../api'
 import { Auth } from '../auth'
 import * as config from '../config'
 import { Database, DatabaseOptions } from '../database'
+import { Logger } from '../logger'
 import { Websocket } from '../websocket'
 import { responseFilter } from './responseFilter'
 
@@ -43,7 +44,7 @@ export const createServer = async (): Promise<Hapi.Server> => {
 
   await server.register<DatabaseOptions>({
     plugin: Database,
-    options: null /* {
+    options: { test: true } /* {
       dialect: 'postgres',
       host: '',
       database: '',
@@ -59,6 +60,10 @@ export const createServer = async (): Promise<Hapi.Server> => {
       timeout: 15000,
       signals: ['SIGINT']
     }
+  })
+
+  await server.register({
+    plugin: Logger
   })
 
   await server.register({

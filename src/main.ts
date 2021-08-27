@@ -1,3 +1,7 @@
+import * as dotenv from 'dotenv'
+dotenv.config()
+
+// eslint-disable-next-line import/first
 import * as main from './server'
 
 ;(async function (): Promise<void> {
@@ -6,7 +10,6 @@ import * as main from './server'
 
     // Запускаем сервер
     await server.start()
-    server.log('info', `Server running at: ${server.info.uri}`)
   } catch (e) {
     console.error(e)
   }
