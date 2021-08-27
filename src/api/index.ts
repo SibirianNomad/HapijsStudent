@@ -1,6 +1,7 @@
 import { Plugin, ResponseToolkit, Server } from '@hapi/hapi'
 import * as HapiSwagger from 'hapi-swagger'
 import * as pkg from '../../package.json'
+import { swaggerOptions } from './swagger'
 import { Users } from './users'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -13,15 +14,7 @@ export const Api: Plugin<any> = {
 
     await server.register({
       plugin: HapiSwagger,
-      options: {
-        info: {
-          title: 'API Documentation',
-          version: pkg.version
-        },
-        basePath: '/api',
-        grouping: 'tags'
-
-      }
+      options: swaggerOptions
     })
 
     /* default handler for non-existing routes */
