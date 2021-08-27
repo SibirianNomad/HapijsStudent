@@ -46,22 +46,22 @@ export type UpdateUser = Partial<CreateUser>
   tableName: 'users'
 })
 export class UserModel extends Model<UserDto, CreateUser> implements UserDto {
-  @Column(DataType.STRING)
   @Default(uuid.v4())
   @PrimaryKey
+  @Column(DataType.STRING)
   id: string
 
-  @Column(DataType.STRING)
   @Unique
   @AllowNull(false)
+  @Column(DataType.STRING)
   email: string
 
-  @Column(DataType.STRING)
   @AllowNull(true)
+  @Column(DataType.STRING)
   avatar: string
 
-  @Column(DataType.STRING)
   @AllowNull(false)
+  @Column(DataType.STRING)
   password: string
 
   @CreatedAt

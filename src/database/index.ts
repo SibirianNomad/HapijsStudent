@@ -3,11 +3,11 @@ import { Plugin, Server } from '@hapi/hapi'
 import * as pkg from '../../package.json'
 import { createUser, getUser, UserModel } from './user'
 
-export type DatabaseOptions = {
+export type DatabaseOptions = Partial<{
   /**
    * create an in-memory test database
    */
-  test?: boolean
+  test: boolean
 
   /**
    * database server host
@@ -37,8 +37,8 @@ export type DatabaseOptions = {
   /**
    * database dialect
    */
-  dialect?: 'postgres' | 'sqlite' /* currently supported */
-}
+  dialect: 'postgres' | 'sqlite' /* currently supported */
+}>
 
 export const Database: Plugin<DatabaseOptions> = {
   name: 'database',
