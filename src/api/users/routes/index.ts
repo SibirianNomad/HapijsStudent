@@ -1,4 +1,5 @@
 import { ServerRoute } from '@hapi/hapi'
+import { responseFilter } from '../../responseFilter'
 import { AuthenticationResultSchema, LoginSchema, RefreshTokenSchema, RegisterSchema, UserSchema } from '../schemes'
 import * as users from './handlers/users'
 
@@ -9,6 +10,11 @@ export const register: ServerRoute = {
   options: {
     id: 'register',
     tags: ['api', 'Users'],
+    ext: {
+      onPreResponse: {
+        method: responseFilter
+      }
+    },
     payload: {
       allow: ['application/json', 'application/*+json'],
       parse: true,
@@ -31,6 +37,11 @@ export const login: ServerRoute = {
   options: {
     id: 'login',
     tags: ['api', 'Users'],
+    ext: {
+      onPreResponse: {
+        method: responseFilter
+      }
+    },
     payload: {
       allow: ['application/json', 'application/*+json'],
       parse: true,
@@ -53,6 +64,11 @@ export const refresh: ServerRoute = {
   options: {
     id: 'refresh',
     tags: ['api', 'Users'],
+    ext: {
+      onPreResponse: {
+        method: responseFilter
+      }
+    },
     payload: {
       allow: ['application/json', 'application/*+json'],
       parse: true,
@@ -75,6 +91,11 @@ export const profile: ServerRoute = {
   options: {
     id: 'profile',
     tags: ['api', 'Users'],
+    ext: {
+      onPreResponse: {
+        method: responseFilter
+      }
+    },
     validate: {
       failAction: 'error'
     },

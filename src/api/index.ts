@@ -1,4 +1,4 @@
-import { Plugin, ResponseToolkit, Server } from '@hapi/hapi'
+import { Plugin, Server } from '@hapi/hapi'
 import * as HapiSwagger from 'hapi-swagger'
 import * as pkg from '../../package.json'
 import { swaggerOptions } from './swagger'
@@ -15,13 +15,6 @@ export const Api: Plugin<any> = {
     await server.register({
       plugin: HapiSwagger,
       options: swaggerOptions
-    })
-
-    /* default handler for non-existing routes */
-    server.route({
-      method: '*',
-      path: '*',
-      handler: (_, reply: ResponseToolkit) => reply.response().code(404)
     })
 
     server.register(Users, { routes: { prefix: '/v1' } })

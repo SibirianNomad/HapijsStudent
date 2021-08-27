@@ -12,14 +12,9 @@ type Response = {
   }
 }
 
-export const responseFilter = (request: Request, h: ResponseToolkit, err?: Error | undefined): ResponseObject => {
+export const responseFilter = (request: Request, h: ResponseToolkit, err?: Error | undefined): ResponseObject | symbol => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { source: payload, isBoom, stack, output, statusCode } = request.response as any
-
-  /* rouet does not exist */
-  if (request.route.path.endsWith('{any*}')) {
-    return h.response().code(404)
-  }
 
   /* handler throws error */
   if (isBoom) {

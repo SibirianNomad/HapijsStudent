@@ -9,7 +9,6 @@ import * as config from '../config'
 import { Database, DatabaseOptions } from '../database'
 import { Logger } from '../logger'
 import { Websocket } from '../websocket'
-import { responseFilter } from './responseFilter'
 
 export const createServer = async (): Promise<Hapi.Server> => {
   const server = new Hapi.Server({
@@ -38,9 +37,6 @@ export const createServer = async (): Promise<Hapi.Server> => {
     Inert,
     Vision
   ])
-
-  /* Resonse filter */
-  server.ext('onPreResponse', responseFilter)
 
   await server.register<DatabaseOptions>({
     plugin: Database,
