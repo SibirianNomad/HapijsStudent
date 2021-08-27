@@ -44,9 +44,8 @@ export const Database: Plugin<DatabaseOptions> = {
   name: 'database',
   version: pkg.version,
   register: async (server: Server, options: DatabaseOptions) => {
-    const { test, host, port, username, password, database } = options
     let sequelize: Sequelize
-    if (test) {
+    if (options.test) {
       sequelize = new Sequelize('sqlite::memory:', {
         models: [UserModel],
         logging: false,
@@ -58,12 +57,7 @@ export const Database: Plugin<DatabaseOptions> = {
       await sequelize.sync()
     } else {
       sequelize = new Sequelize({
-        dialect: 'postgres',
-        host,
-        port,
-        database,
-        username,
-        password,
+        ...options,
         models: [UserModel]
       })
     }
