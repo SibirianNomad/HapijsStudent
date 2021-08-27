@@ -7,7 +7,7 @@ export type DatabaseOptions = {
   /**
    * create an in-memory test database
    */
-  test: boolean
+  test?: boolean
 
   /**
    * database server host
