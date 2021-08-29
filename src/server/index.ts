@@ -62,13 +62,14 @@ export const createServer = async (): Promise<Hapi.Server> => {
     plugin: Logger
   })
 
+  /* Auth module must be registered before Api module */
   await server.register({
-    plugin: Api,
+    plugin: Auth,
     options: {}
   })
 
   await server.register({
-    plugin: Auth,
+    plugin: Api,
     options: {}
   })
 
