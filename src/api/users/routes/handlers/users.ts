@@ -2,6 +2,10 @@ import { Request, ResponseObject, ResponseToolkit } from '@hapi/hapi'
 import { LoginDto, RegisterDto } from '../../schemes'
 import * as bcrypt from 'bcrypt'
 
+/* TODO: it may be preferrable to move this variables in some global place */
+const SECRET = String(process.env.AUTH_JWT_SECRET)
+const REFRESH_SECRET = String(process.env.AUTH_JWT_REFRESH_SECRET)
+
 export const register = async (request: Request, reply: ResponseToolkit): Promise<ResponseObject> => {
   const { email, password, confirmPassword } = request.payload as RegisterDto
 
@@ -14,12 +18,16 @@ export const register = async (request: Request, reply: ResponseToolkit): Promis
     return reply.response({ ok: false, error: 'e-mail address is registered with an existing account.' }).code(401)
   }
 
-  const hashedPassword = await bcrypt.hash(password, 1)
   // eslint-disable-next-line no-unused-vars
-  const user = await createUser({ email, password: hashedPassword })
+  const user = await createUser({ email, password })
 
-  /* TODO: create jwt access token from user data */
-  /* TODO: create jwt refresh token from user data */
+  if (user !== null) {
+    const { createToken } = request.server.methods
+    const accessToken = createToken(user, 'access', SECRET)
+    const refreshToken = createToken(user, 'refresh', REFRESH_SECRET)
+
+    return reply.response({ token: accessToken, refreshToken: refreshToken }).code(200)
+  }
 
   return reply.response({ token: '', refreshToken: '' }).code(200)
 }
@@ -32,35 +40,42 @@ export const login = async (request: Request, reply: ResponseToolkit): Promise<R
   const user = await getUser(email, hashedPassword)
 
   if (user !== null) {
-    return reply.response({ token: '', refreshToken: '' }).code(200)
+    const { createToken } = request.server.methods
+    const accessToken = createToken(user, 'access', SECRET)
+    const refreshToken = createToken(user, 'refresh', REFRESH_SECRET)
+
+    return reply.response({ token: accessToken, refreshToken: refreshToken }).code(200)
   }
 
   return reply.response({ ok: false, error: 'invalid credentials' }).code(401)
 }
 
 export const refreshToken = async (request: Request, reply: ResponseToolkit): Promise<ResponseObject> => {
-  return reply.response()
-}
-
-export const profile = async (request: Request, reply: ResponseToolkit): Promise<ResponseObject> => {
-  const authorization = request.headers.authorization
-  if (!authorization) {
-    return reply.response({ ok: false, error: 'unauthorized user' }).code(401)
-  }
-
-  const [, token] = authorization.split(' ')
-  if (!token) {
-    return reply.response({ ok: false, error: 'access forbidden.' }).code(403)
-  }
+  const { /* credentials, */ artifacts } = request.auth
 
   const { getUser } = request.server.methods
 
-  const email = token
+  const email = artifacts.email
   const user = await getUser(email)
 
   if (user !== null) {
     return reply.response(user).code(200)
   }
 
-  return reply.response({ ok: false, error: 'access forbidden.' }).code(403)
+  return reply.response().code(404)
+}
+
+export const profile = async (request: Request, reply: ResponseToolkit): Promise<ResponseObject> => {
+  const { /* credentials, */ artifacts } = request.auth
+
+  const { getUser } = request.server.methods
+
+  const email = artifacts.email
+  const user = await getUser(email)
+
+  if (user !== null) {
+    return reply.response(user).code(200)
+  }
+
+  return reply.response().code(404)
 }

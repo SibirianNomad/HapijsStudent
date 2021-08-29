@@ -69,6 +69,10 @@ export const refresh: ServerRoute = {
         method: responseFilter
       }
     },
+    auth: {
+      mode: 'required',
+      strategy: 'bearer-refresh'
+    },
     payload: {
       allow: ['application/json', 'application/*+json'],
       parse: true,
@@ -95,6 +99,10 @@ export const profile: ServerRoute = {
       onPreResponse: {
         method: responseFilter
       }
+    },
+    auth: {
+      mode: 'required',
+      strategy: 'bearer'
     },
     validate: {
       failAction: 'error'
