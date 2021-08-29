@@ -12,8 +12,37 @@ export type AuthenticationData = {
   artifacts?: AuthArtifacts | undefined;
 }
 
-export const validate = async (request: Request, token: string, h: ResponseToolkit): Promise<AuthenticationData> => {
+/* TODO: it may be preferrable to move this variables in some global place */
+const SECRET = String(process.env.AUTH_JWT_SECRET)
+const REFRESH_SECRET = String(process.env.AUTH_JWT_REFRESH_SECRET)
+
+export const validateToken = async (request: Request, token: string, h: ResponseToolkit): Promise<AuthenticationData> => {
   // TODO: use verifyToken to verify token and extract user data
+  const { isValid, decoded } = await verifyToken(token, SECRET, 'access')
+
+  if (isValid) {
+    const { email } = decoded
+    const { getUser } = request.server.methods
+    const user = await getUser(email)
+
+    return { isValid, credentials: user, artifacts: user }
+  }
+
+  return { isValid: true, credentials: {}, artifacts: undefined }
+}
+
+export const validateRefreshToken = async (request: Request, token: string, h: ResponseToolkit): Promise<AuthenticationData> => {
+  // TODO: use verifyToken to verify token and extract user data
+  const { isValid, decoded } = await verifyToken(token, REFRESH_SECRET, 'refresh')
+
+  if (isValid) {
+    const { email } = decoded
+    const { getUser } = request.server.methods
+    const user = await getUser(email)
+
+    return { isValid, credentials: user, artifacts: user }
+  }
+
   return { isValid: true, credentials: {}, artifacts: undefined }
 }
 

@@ -19,11 +19,18 @@ export const Auth: Plugin<AuthOptions> = {
     ])
 
     server.auth.strategy('bearer', 'bearer-access-token', {
-      validate: bearer.validate
+      validate: bearer.validateToken
+    })
+
+    server.auth.strategy('bearer-refresh', 'bearer-access-token', {
+      validate: bearer.validateRefreshToken
     })
 
     server.auth.strategy('basic', 'basic', {
       validate: basic.validate
     })
+
+    server.method(bearer.createToken.name, bearer.createToken)
+    server.method(bearer.verifyToken.name, bearer.verifyToken)
   }
 }
