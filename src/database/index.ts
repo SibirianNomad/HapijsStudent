@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize-typescript'
 import { Plugin, Server } from '@hapi/hapi'
 import * as pkg from '../../package.json'
-import { createUser, getUser, UserModel } from './user'
+import { createUser, getUser, isUniqueEmailAddress, UserModel } from './user'
 
 export type DatabaseOptions = Partial<{
   /**
@@ -65,5 +65,6 @@ export const Database: Plugin<DatabaseOptions> = {
     server.expose(sequelize)
     server.method(createUser.name, createUser)
     server.method(getUser.name, getUser)
+    server.method(isUniqueEmailAddress.name, isUniqueEmailAddress)
   }
 }
