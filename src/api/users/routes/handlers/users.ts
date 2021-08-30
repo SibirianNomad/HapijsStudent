@@ -2,10 +2,6 @@ import { Request, ResponseObject, ResponseToolkit } from '@hapi/hapi'
 import { LoginDto, RegisterDto } from '../../schemes'
 import * as bcrypt from 'bcrypt'
 
-/* TODO: it may be preferrable to move this variables in some global place */
-const SECRET = String(process.env.AUTH_JWT_SECRET)
-const REFRESH_SECRET = String(process.env.AUTH_JWT_REFRESH_SECRET)
-
 export const register = async (request: Request, reply: ResponseToolkit): Promise<ResponseObject> => {
   const { email, password, confirmPassword } = request.payload as RegisterDto
 
@@ -23,8 +19,8 @@ export const register = async (request: Request, reply: ResponseToolkit): Promis
 
   if (user !== null) {
     const { createToken } = request.server.methods
-    const accessToken = createToken(user, 'access', SECRET)
-    const refreshToken = createToken(user, 'refresh', REFRESH_SECRET)
+    const accessToken = createToken(user, 'access')
+    const refreshToken = createToken(user, 'refresh')
 
     return reply.response({ token: accessToken, refreshToken: refreshToken }).code(200)
   }
@@ -41,8 +37,8 @@ export const login = async (request: Request, reply: ResponseToolkit): Promise<R
 
   if (user !== null) {
     const { createToken } = request.server.methods
-    const accessToken = createToken(user, 'access', SECRET)
-    const refreshToken = createToken(user, 'refresh', REFRESH_SECRET)
+    const accessToken = createToken(user, 'access')
+    const refreshToken = createToken(user, 'refresh')
 
     return reply.response({ token: accessToken, refreshToken: refreshToken }).code(200)
   }

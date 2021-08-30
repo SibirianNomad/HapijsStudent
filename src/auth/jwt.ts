@@ -1,5 +1,6 @@
 import { AuthArtifacts, AuthCredentials, Request, ResponseToolkit } from '@hapi/hapi'
 import * as jwt from 'jsonwebtoken'
+import { Auth } from '../config'
 
 export type TokenPurpose = 'access' | 'refresh'
 
@@ -12,13 +13,9 @@ export type AuthenticationData = {
   artifacts?: AuthArtifacts | undefined;
 }
 
-/* TODO: it may be preferrable to move this variables in some global place */
-const SECRET = String(process.env.AUTH_JWT_SECRET)
-const REFRESH_SECRET = String(process.env.AUTH_JWT_REFRESH_SECRET)
-
 export const validateToken = async (request: Request, token: string, h: ResponseToolkit): Promise<AuthenticationData> => {
   // TODO: use verifyToken to verify token and extract user data
-  const { isValid, decoded } = await verifyToken(token, SECRET, 'access')
+  const { isValid, decoded } = await verifyToken(token, 'access')
 
   if (isValid) {
     const { email } = decoded
@@ -33,7 +30,7 @@ export const validateToken = async (request: Request, token: string, h: Response
 
 export const validateRefreshToken = async (request: Request, token: string, h: ResponseToolkit): Promise<AuthenticationData> => {
   // TODO: use verifyToken to verify token and extract user data
-  const { isValid, decoded } = await verifyToken(token, REFRESH_SECRET, 'refresh')
+  const { isValid, decoded } = await verifyToken(token, 'refresh')
 
   if (isValid) {
     const { email } = decoded
@@ -47,7 +44,8 @@ export const validateRefreshToken = async (request: Request, token: string, h: R
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const createToken = async (data: any, purpose: TokenPurpose, secret: string): Promise<string> => {
+export const createToken = async (data: any, purpose: TokenPurpose, secret?: string): Promise<string> => {
+  secret = secret || purpose === 'access' ? Auth.secret : Auth.refresh_secret
   return await new Promise((resolve, reject) => {
     jwt.sign({ ...data, purpose }, secret, {
       /* TODO: add necessary options */
@@ -63,7 +61,9 @@ export const createToken = async (data: any, purpose: TokenPurpose, secret: stri
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const verifyToken = async (token: string, secret: string, purpose: TokenPurpose): Promise<TokenVerifyResult> => {
+export const verifyToken = async (token: string, purpose: TokenPurpose, secret?: string): Promise<TokenVerifyResult> => {
+  secret = secret || purpose === 'access' ? Auth.secret : Auth.refresh_secret
+
   return new Promise((resolve, reject) => {
     try {
       jwt.verify(token, secret, {
