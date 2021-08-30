@@ -5,6 +5,7 @@
   "scripts": {
     "clean": "rimraf ./build",
     "build": "npm run clean && tsc",
+    "start": "node ./build/src/main.js",
     "start:dev": "npm run build && concurrently -k \"tsc -w\" \"nodemon ./build/src/main.js\"",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint '{src,test}/**/*.ts' --quiet --fix",
