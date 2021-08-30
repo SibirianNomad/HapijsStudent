@@ -15,6 +15,9 @@ export const swaggerOptions: RegisterOptions = {
       name: 'Authorization',
       in: 'header',
       'x-keyPrefix': 'Bearer '
+    },
+    basic: {
+      type: 'basic'
     }
   },
   security: [
