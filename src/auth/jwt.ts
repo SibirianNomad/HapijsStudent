@@ -46,10 +46,11 @@ export const validateRefreshToken = async (request: Request, token: string, h: R
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const createToken = async (data: any, purpose: TokenPurpose, secret?: string): Promise<string> => {
   secret = secret || purpose === 'access' ? Auth.secret : Auth.refresh_secret
+  const expiresIn = purpose === 'access' ? Auth.jwt_lifetime : Auth.jwt_refresh_lifetime
   return await new Promise((resolve, reject) => {
     jwt.sign({ ...data, purpose }, secret, {
       /* TODO: add necessary options */
-      expiresIn: '2 days'
+      expiresIn
     }, (error, encoded) => {
       if (error) {
         return reject(error)

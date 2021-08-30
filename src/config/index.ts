@@ -7,5 +7,7 @@ export const Server = {
 
 export const Auth = {
   secret: String(process.env.AUTH_JWT_SECRET),
-  refresh_secret: String(process.env.AUTH_JWT_REFRESH_SECRET)
+  jwt_lifetime: String(process.env.AUTH_JWT_LIFETIME),
+  refresh_secret: String(process.env.AUTH_JWT_REFRESH_SECRET),
+  jwt_refresh_lifetime: String(process.env.AUTH_JWT_REFRESH_LIFETIME)
 }
