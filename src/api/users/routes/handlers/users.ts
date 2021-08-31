@@ -55,7 +55,11 @@ export const refreshToken = async (request: Request, reply: ResponseToolkit): Pr
   const user = await getUser(email)
 
   if (user !== null) {
-    return reply.response(user).code(200)
+    const { createToken } = request.server.methods
+    const accessToken = createToken(user, 'access')
+    const refreshToken = createToken(user, 'refresh')
+
+    return reply.response({ token: accessToken, refreshToken: refreshToken }).code(200)
   }
 
   return reply.response().code(404)
