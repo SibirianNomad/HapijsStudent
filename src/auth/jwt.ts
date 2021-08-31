@@ -1,6 +1,5 @@
 import { AuthArtifacts, AuthCredentials, Request, ResponseToolkit } from '@hapi/hapi'
 import * as jwt from 'jsonwebtoken'
-import { Auth } from '../config'
 
 export type TokenPurpose = 'access' | 'refresh'
 
@@ -28,6 +27,11 @@ export const validateToken = async (request: Request, token: string, h: Response
   return { isValid: true, credentials: {}, artifacts: undefined }
 }
 
+export type TokenOptions = {
+  purpose: TokenPurpose,
+  lifetime: string
+}
+
 export const validateRefreshToken = async (request: Request, token: string, h: ResponseToolkit): Promise<AuthenticationData> => {
   // TODO: use verifyToken to verify token and extract user data
   const { isValid, decoded } = await verifyToken(token, 'refresh')
@@ -44,13 +48,11 @@ export const validateRefreshToken = async (request: Request, token: string, h: R
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const createToken = async (data: any, purpose: TokenPurpose, secret?: string): Promise<string> => {
-  secret = secret || purpose === 'access' ? Auth.secret : Auth.refresh_secret
-  const expiresIn = purpose === 'access' ? Auth.jwt_lifetime : Auth.jwt_refresh_lifetime
+export const createToken = async (data: any, tokenOptions: TokenOptions, secret?: string): Promise<string> => {
   return await new Promise((resolve, reject) => {
-    jwt.sign({ ...data, purpose }, secret, {
+    jwt.sign({ ...data, purpose: tokenOptions.purpose }, secret, {
       /* TODO: add necessary options */
-      expiresIn
+      expiresIn: tokenOptions.lifetime
     }, (error, encoded) => {
       if (error) {
         return reject(error)
@@ -63,8 +65,6 @@ export const createToken = async (data: any, purpose: TokenPurpose, secret?: str
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const verifyToken = async (token: string, purpose: TokenPurpose, secret?: string): Promise<TokenVerifyResult> => {
-  secret = secret || purpose === 'access' ? Auth.secret : Auth.refresh_secret
-
   return new Promise((resolve, reject) => {
     try {
       jwt.verify(token, secret, {
