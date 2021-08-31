@@ -1,6 +1,7 @@
 import { Request, ResponseObject, ResponseToolkit } from '@hapi/hapi'
 import { LoginDto, RegisterDto } from '../../schemes'
 import * as bcrypt from 'bcrypt'
+import { Auth } from '../../../../config'
 
 export const register = async (request: Request, reply: ResponseToolkit): Promise<ResponseObject> => {
   const { email, password, confirmPassword } = request.payload as RegisterDto
@@ -19,8 +20,19 @@ export const register = async (request: Request, reply: ResponseToolkit): Promis
 
   if (user !== null) {
     const { createToken } = request.server.methods
-    const accessToken = createToken(user, 'access')
-    const refreshToken = createToken(user, 'refresh')
+    const accessToken = createToken(
+      user, {
+        purpose: 'access',
+        lifetime: Auth.jwt_lifetime
+      }
+    )
+
+    const refreshToken = createToken(
+      user, {
+        purpose: 'refresh',
+        lifetime: Auth.jwt_refresh_lifetime
+      }
+    )
 
     return reply.response({ token: accessToken, refreshToken: refreshToken }).code(200)
   }
@@ -37,8 +49,19 @@ export const login = async (request: Request, reply: ResponseToolkit): Promise<R
 
   if (user !== null) {
     const { createToken } = request.server.methods
-    const accessToken = createToken(user, 'access')
-    const refreshToken = createToken(user, 'refresh')
+    const accessToken = createToken(
+      user, {
+        purpose: 'access',
+        lifetime: Auth.jwt_lifetime
+      }
+    )
+
+    const refreshToken = createToken(
+      user, {
+        purpose: 'refresh',
+        lifetime: Auth.jwt_refresh_lifetime
+      }
+    )
 
     return reply.response({ token: accessToken, refreshToken: refreshToken }).code(200)
   }
@@ -56,8 +79,19 @@ export const refreshToken = async (request: Request, reply: ResponseToolkit): Pr
 
   if (user !== null) {
     const { createToken } = request.server.methods
-    const accessToken = createToken(user, 'access')
-    const refreshToken = createToken(user, 'refresh')
+    const accessToken = createToken(
+      user, {
+        purpose: 'access',
+        lifetime: Auth.jwt_lifetime
+      }
+    )
+
+    const refreshToken = createToken(
+      user, {
+        purpose: 'refresh',
+        lifetime: Auth.jwt_refresh_lifetime
+      }
+    )
 
     return reply.response({ token: accessToken, refreshToken: refreshToken }).code(200)
   }
