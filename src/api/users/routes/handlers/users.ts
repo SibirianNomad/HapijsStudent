@@ -18,7 +18,7 @@ export const register = async (request: Request, reply: ResponseToolkit): Promis
 
   if (user !== null) {
     const { createToken } = request.server.methods
-    const accessToken = createToken(
+    const accessToken = await createToken(
       user, {
         purpose: 'access',
         // eslint-disable-next-line dot-notation
@@ -28,7 +28,7 @@ export const register = async (request: Request, reply: ResponseToolkit): Promis
       request.server.plugins['auth'].jwtTokenSecret
     )
 
-    const refreshToken = createToken(
+    const refreshToken = await createToken(
       user, {
         purpose: 'refresh',
         // eslint-disable-next-line dot-notation
