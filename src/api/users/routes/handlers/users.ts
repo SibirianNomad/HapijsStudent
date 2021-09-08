@@ -1,7 +1,6 @@
 import { Request, ResponseObject, ResponseToolkit } from '@hapi/hapi'
 import { LoginDto, RegisterDto } from '../../schemes'
 import * as bcrypt from 'bcrypt'
-import { Auth } from '../../../../config'
 
 export const register = async (request: Request, reply: ResponseToolkit): Promise<ResponseObject> => {
   const { email, password, confirmPassword } = request.payload as RegisterDto
@@ -15,7 +14,6 @@ export const register = async (request: Request, reply: ResponseToolkit): Promis
     return reply.response({ ok: false, error: 'e-mail address is registered with an existing account.' }).code(401)
   }
 
-  // eslint-disable-next-line no-unused-vars
   const user = await createUser({ email, password })
 
   if (user !== null) {
@@ -23,21 +21,27 @@ export const register = async (request: Request, reply: ResponseToolkit): Promis
     const accessToken = createToken(
       user, {
         purpose: 'access',
-        lifetime: Auth.jwt_lifetime
-      }
+        // eslint-disable-next-line dot-notation
+        lifetime: request.server.plugins['auth'].jwtTokenLifetime
+      },
+      // eslint-disable-next-line dot-notation
+      request.server.plugins['auth'].jwtTokenSecret
     )
 
     const refreshToken = createToken(
       user, {
         purpose: 'refresh',
-        lifetime: Auth.jwt_refresh_lifetime
-      }
+        // eslint-disable-next-line dot-notation
+        lifetime: request.server.plugins['auth'].jwtRefreshTokenLifetime
+      },
+      // eslint-disable-next-line dot-notation
+      request.server.plugins['auth'].jwtRefreshTokenSecret
     )
 
     return reply.response({ token: accessToken, refreshToken: refreshToken }).code(200)
   }
 
-  return reply.response({ token: '', refreshToken: '' }).code(200)
+  return reply.response().code(400)
 }
 
 export const login = async (request: Request, reply: ResponseToolkit): Promise<ResponseObject> => {
@@ -52,14 +56,16 @@ export const login = async (request: Request, reply: ResponseToolkit): Promise<R
     const accessToken = createToken(
       user, {
         purpose: 'access',
-        lifetime: Auth.jwt_lifetime
+        // eslint-disable-next-line dot-notation
+        lifetime: request.server.plugins['auth'].jwtTokenLifetime
       }
     )
 
     const refreshToken = createToken(
       user, {
         purpose: 'refresh',
-        lifetime: Auth.jwt_refresh_lifetime
+        // eslint-disable-next-line dot-notation
+        lifetime: request.server.plugins['auth'].jwtRefreshTokenLifetime
       }
     )
 
@@ -82,14 +88,16 @@ export const refreshToken = async (request: Request, reply: ResponseToolkit): Pr
     const accessToken = createToken(
       user, {
         purpose: 'access',
-        lifetime: Auth.jwt_lifetime
+        // eslint-disable-next-line dot-notation
+        lifetime: request.server.plugins['auth'].jwtTokenLifetime
       }
     )
 
     const refreshToken = createToken(
       user, {
         purpose: 'refresh',
-        lifetime: Auth.jwt_refresh_lifetime
+        // eslint-disable-next-line dot-notation
+        lifetime: request.server.plugins['auth'].jwtRefreshTokenLifetime
       }
     )
 

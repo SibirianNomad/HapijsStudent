@@ -7,6 +7,10 @@ import * as HapiBasic from '@hapi/basic'
 
 export type AuthOptions = {
   // TODO: add additional options that needs to be passed to this module
+  jwtTokenSecret: string
+  jwtRefreshTokenSecret: string
+  jwtTokenLifetime: string | number
+  jwtRefreshTokenLifetime: string | number
 }
 
 export const Auth: Plugin<AuthOptions> = {
@@ -29,6 +33,12 @@ export const Auth: Plugin<AuthOptions> = {
     server.auth.strategy('basic', 'basic', {
       validate: basic.validate
     })
+
+    server.expose('jwtTokenSecret', options.jwtTokenSecret)
+    server.expose('jwtRefreshTokenSecret', options.jwtRefreshTokenSecret)
+
+    server.expose('jwtTokenLifetime', options.jwtTokenLifetime)
+    server.expose('jwtRefreshTokenLifetime', options.jwtRefreshTokenLifetime)
 
     server.method(bearer.createToken.name, bearer.createToken)
     server.method(bearer.verifyToken.name, bearer.verifyToken)
