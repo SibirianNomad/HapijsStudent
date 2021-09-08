@@ -1,15 +1,12 @@
-import Code from '@hapi/code'
-import { Server } from '@hapi/hapi'
-import Lab from '@hapi/lab'
-import { Database } from '../src/database'
+import 'jest-extended'
 
-const { describe, it, before } = exports.lab = Lab.script()
-const { expect } = Code
+import { Server } from '@hapi/hapi'
+import { Database } from '../src/database'
 
 describe('database', () => {
   const server = new Server()
 
-  before(async () => {
+  beforeAll(async () => {
     await server.register({
       plugin: Database,
       options: {
@@ -22,9 +19,9 @@ describe('database', () => {
 
   it('database methods', () => {
     const { createUser, getUser, isUniqueEmailAddress } = server.methods
-    expect(createUser).function()
-    expect(getUser).function()
-    expect(isUniqueEmailAddress).function()
+    expect(createUser).toBeFunction()
+    expect(getUser).toBeFunction()
+    expect(isUniqueEmailAddress).toBeFunction()
   })
 
   it('create user', () => {

@@ -1,99 +1,92 @@
-import Code from '@hapi/code'
 import { Server } from '@hapi/hapi'
-import Lab from '@hapi/lab'
 import { Users } from '../src/api/users'
 import * as Mocks from './mocks'
 import { Auth } from '../src/auth'
 
-const { describe, it, suite, before } = exports.lab = Lab.script()
-const { expect } = Code
+describe('register user', () => {
+  const server: Server = new Server()
 
-suite('Users API', () => {
-  describe('register user', () => {
-    const server: Server = new Server()
+  beforeAll(async () => {
+    server.method('createUser', Mocks.createUser)
 
-    before(async () => {
-      server.method('createUser', Mocks.createUser)
+    server.method('isUniqueEmailAddress', Mocks.isUniqueEmailAddress)
 
-      server.method('isUniqueEmailAddress', Mocks.isUniqueEmailAddress)
-
-      await server.register({
-        plugin: Auth,
-        options: {
-          jwtRefreshTokenSecret: 'A86D1AC8-81C2-451A-9CEA-8665F4C55DE7',
-          jwtTokenSecret: '6FD3C2FF-D14C-4F8D-85EF-6662B065D125',
-          jwtRefreshTokenLifetime: 60,
-          jwtTokenLifetime: 30
-        }
-      })
-
-      await server.register({
-        plugin: Users
-      })
-
-      await server.initialize()
+    await server.register({
+      plugin: Auth,
+      options: {
+        jwtRefreshTokenSecret: 'A86D1AC8-81C2-451A-9CEA-8665F4C55DE7',
+        jwtTokenSecret: '6FD3C2FF-D14C-4F8D-85EF-6662B065D125',
+        jwtRefreshTokenLifetime: 60,
+        jwtTokenLifetime: 30
+      }
     })
 
-    it('user created and return auth tokens', async () => {
-      const result = await server.inject({
-        url: '/users/register',
-        method: 'POST',
-        payload: {
-          email: 'test@test.com',
-          password: 'foo',
-          confirmPassword: 'foo'
-        }
-      })
-
-      expect(result.statusCode).equal(200)
+    await server.register({
+      plugin: Users
     })
 
-    it('returns bad request on incorrect registration data', async () => {
-      expect(true)
-    })
+    await server.initialize()
   })
 
-  describe('login user', () => {
-    const server: Server = new Server()
-
-    before(async () => {
-      await server.register({
-        plugin: Users
-      })
-
-      server.method('getUser', Mocks.getUser)
-
-      server.initialize()
+  it('user created and return auth tokens', async () => {
+    const result = await server.inject({
+      url: '/users/register',
+      method: 'POST',
+      payload: {
+        email: 'test@test.com',
+        password: 'foo',
+        confirmPassword: 'foo'
+      }
     })
 
-    it('return auth tokens', async () => {
-      expect(true)
-    })
-
-    it('login user returns bad request', async () => {
-      expect(true)
-    })
+    expect(result.statusCode).toBe(200)
   })
 
-  describe('user profile', () => {
-    const server: Server = new Server()
+  it('returns bad request on incorrect registration data', async () => {
+    expect(true)
+  })
+})
 
-    before(async () => {
-      await server.register({
-        plugin: Users
-      })
+describe('login user', () => {
+  const server: Server = new Server()
 
-      server.method('getUser', Mocks.getUser)
-
-      server.initialize()
+  beforeAll(async () => {
+    await server.register({
+      plugin: Users
     })
 
-    it('return user profile data', async () => {
-      expect(true)
+    server.method('getUser', Mocks.getUser)
+
+    server.initialize()
+  })
+
+  it('return auth tokens', async () => {
+    expect(true)
+  })
+
+  it('login user returns bad request', async () => {
+    expect(true)
+  })
+})
+
+describe('user profile', () => {
+  const server: Server = new Server()
+
+  beforeAll(async () => {
+    await server.register({
+      plugin: Users
     })
 
-    it('return unauthorized', async () => {
-      expect(true)
-    })
+    server.method('getUser', Mocks.getUser)
+
+    server.initialize()
+  })
+
+  it('return user profile data', async () => {
+    expect(true)
+  })
+
+  it('return unauthorized', async () => {
+    expect(true)
   })
 })

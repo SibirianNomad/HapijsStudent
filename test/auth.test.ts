@@ -1,15 +1,12 @@
-import Code from '@hapi/code'
-import { Server } from '@hapi/hapi'
-import Lab from '@hapi/lab'
-import { Auth } from '../src/auth'
+import 'jest-extended'
 
-const { describe, it, before } = exports.lab = Lab.script()
-const { expect } = Code
+import { Server } from '@hapi/hapi'
+import { Auth } from '../src/auth'
 
 describe('auth', () => {
   const server = new Server()
 
-  before(async () => {
+  beforeAll(async () => {
     await server.register({
       plugin: Auth
     })
@@ -19,8 +16,8 @@ describe('auth', () => {
 
   it('auth methods', () => {
     const { createToken, verifyToken } = server.methods
-    expect(createToken).to.be.function()
-    expect(verifyToken).to.be.function()
+    expect(createToken).toBeFunction()
+    expect(verifyToken).toBeFunction()
   })
 
   it('create access token', async () => {
@@ -29,7 +26,7 @@ describe('auth', () => {
       email: 'test@test.com'
     }, { purpose: 'access', lifetime: 3600 }, '37D6E247-CE52-4F7B-8747-BFC6279A0972')
 
-    expect(result).to.be.string()
+    expect(result).toBeString()
   })
 
   it('create refresh token', async () => {
@@ -38,7 +35,7 @@ describe('auth', () => {
       email: 'test@test.com'
     }, { purpose: 'refresh', lifetime: 5000 }, '37D6E247-CE52-4F7B-8747-BFC6279A0972')
 
-    expect(result).to.be.string()
+    expect(result).toBeString()
   })
 
   it('verify access token', async () => {
@@ -56,12 +53,12 @@ describe('auth', () => {
       secret
     )
 
-    expect(result).to.be.object()
-    expect(result.isValid).to.be.true()
-    expect(result.decoded).to.be.object()
-    expect(result.decoded.email).to.be.string()
-    expect(result.decoded.id).to.be.string()
-    expect(result.decoded.purpose).to.be.equal(purpose)
+    expect(result).toBeObject()
+    expect(result.isValid).toBeTrue()
+    expect(result.decoded).toBeObject()
+    expect(result.decoded.email).toBeString()
+    expect(result.decoded.id).toBeString()
+    expect(result.decoded.purpose).toBe(purpose)
   })
 
   it('verify refresh token', async () => {
@@ -78,11 +75,11 @@ describe('auth', () => {
       secret
     )
 
-    expect(result).to.be.object()
-    expect(result.isValid).to.be.true()
-    expect(result.decoded).to.be.object()
-    expect(result.decoded.email).to.be.string()
-    expect(result.decoded.id).to.be.string()
-    expect(result.decoded.purpose).to.be.equal(purpose)
+    expect(result).toBeObject()
+    expect(result.isValid).toBeTrue()
+    expect(result.decoded).toBeObject()
+    expect(result.decoded.email).toBeString()
+    expect(result.decoded.id).toBeString()
+    expect(result.decoded.purpose).toBe(purpose)
   })
 })
