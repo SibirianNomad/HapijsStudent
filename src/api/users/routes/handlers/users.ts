@@ -53,7 +53,7 @@ export const login = async (request: Request, reply: ResponseToolkit): Promise<R
 
   if (user !== null) {
     const { createToken } = request.server.methods
-    const accessToken = createToken(
+    const accessToken = await createToken(
       user, {
         purpose: 'access',
         // eslint-disable-next-line dot-notation
@@ -61,7 +61,7 @@ export const login = async (request: Request, reply: ResponseToolkit): Promise<R
       }
     )
 
-    const refreshToken = createToken(
+    const refreshToken = await createToken(
       user, {
         purpose: 'refresh',
         // eslint-disable-next-line dot-notation
@@ -85,7 +85,7 @@ export const refreshToken = async (request: Request, reply: ResponseToolkit): Pr
 
   if (user !== null) {
     const { createToken } = request.server.methods
-    const accessToken = createToken(
+    const accessToken = await createToken(
       user, {
         purpose: 'access',
         // eslint-disable-next-line dot-notation
@@ -93,7 +93,7 @@ export const refreshToken = async (request: Request, reply: ResponseToolkit): Pr
       }
     )
 
-    const refreshToken = createToken(
+    const refreshToken = await createToken(
       user, {
         purpose: 'refresh',
         // eslint-disable-next-line dot-notation
