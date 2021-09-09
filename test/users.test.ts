@@ -3,13 +3,14 @@ import { Users } from '../src/api/users'
 import * as Mocks from './mocks'
 import { Auth } from '../src/auth'
 
-describe('register user', () => {
+describe('api /users', () => {
   const server: Server = new Server()
 
   beforeAll(async () => {
     server.method('createUser', Mocks.createUser)
 
     server.method('isUniqueEmailAddress', Mocks.isUniqueEmailAddress)
+    server.method('getUser', Mocks.getUser)
 
     await server.register({
       plugin: Auth,
@@ -45,20 +46,6 @@ describe('register user', () => {
   it('returns bad request on incorrect registration data', async () => {
     expect(true)
   })
-})
-
-describe('login user', () => {
-  const server: Server = new Server()
-
-  beforeAll(async () => {
-    await server.register({
-      plugin: Users
-    })
-
-    server.method('getUser', Mocks.getUser)
-
-    server.initialize()
-  })
 
   it('return auth tokens', async () => {
     expect(true)
@@ -66,20 +53,6 @@ describe('login user', () => {
 
   it('login user returns bad request', async () => {
     expect(true)
-  })
-})
-
-describe('user profile', () => {
-  const server: Server = new Server()
-
-  beforeAll(async () => {
-    await server.register({
-      plugin: Users
-    })
-
-    server.method('getUser', Mocks.getUser)
-
-    server.initialize()
   })
 
   it('return user profile data', async () => {
