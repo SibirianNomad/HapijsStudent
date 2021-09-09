@@ -65,7 +65,12 @@ export const createServer = async (): Promise<Hapi.Server> => {
   /* Auth module must be registered before Api module */
   await server.register({
     plugin: Auth,
-    options: {}
+    options: {
+      jwtTokenSecret: config.Auth.secret,
+      jwtTokenLifetime: config.Auth.jwt_lifetime,
+      jwtRefreshTokenSecret: config.Auth.refresh_secret,
+      jwtRefreshTokenLifetime: config.Auth.jwt_refresh_lifetime
+    }
   })
 
   await server.register({
