@@ -1,118 +1,94 @@
-import * as Hapi from '@hapi/hapi';
-import * as Nes from '@hapi/nes';
-import * as Inert from '@hapi/inert';
-import * as Vision from '@hapi/vision';
-import * as Pino from 'hapi-pino';
-import * as Basic from '@hapi/basic';
-import * as HapiCors from 'hapi-cors';
-import * as HapiBearer from 'hapi-auth-bearer-token';
-import * as HapiPulse from 'hapi-pulse';
-import * as Qs from 'qs';
-import routes from './routes';
-import config from './config/config';
-import { handleValidationError, responseHandler, } from './utils';
-import { tokenValidate, } from './utils/auth';
-import SwaggerOptions from './config/swagger';
-import { pinoConfig, } from './config/pino';
+import * as Hapi from '@hapi/hapi'
+import * as Inert from '@hapi/inert'
+import * as Vision from '@hapi/vision'
+import * as HapiPulse from 'hapi-pulse'
+import * as Qs from 'qs'
+import { Api } from '../api'
+import { Auth } from '../auth'
+import * as config from '../config'
+import { Database, DatabaseOptions } from '../database'
+import { Logger } from '../logger'
+import { Websocket } from '../websocket'
 
-const HapiSwagger = require('hapi-swagger');
-const Package = require('../../package.json');
-
-SwaggerOptions.info.version = Package.version;
-
-const init = async () => {
-  const server = await new Hapi.Server({
-    port: config.server.port,
-    host: config.server.host,
+export const createServer = async (): Promise<Hapi.Server> => {
+  const server = new Hapi.Server({
+    port: config.Server.port,
+    host: config.Server.host,
     query: {
-      parser: (query) => Qs.parse(query),
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+      parser: (query) => Qs.parse(query)
     },
     routes: {
       validate: {
         options: {
           // Handle all validation errors
-          abortEarly: false,
+          abortEarly: false
         },
-        failAction: handleValidationError,
+        failAction: 'error'
       },
       response: {
-        failAction: 'log',
-      },
-    },
-  });
-  server.realm.modifiers.route.prefix = '/api';
-  // Регистрируем расширения
+        failAction: 'log'
+      }
+    }
+  })
+
+  /* plugins required */
   await server.register([
-    Basic,
-    Nes,
     Inert,
-    Vision,
-    HapiBearer,
-    { plugin: Pino, options: pinoConfig(false), },
-    { plugin: HapiSwagger, options: SwaggerOptions, }
-  ]);
+    Vision
+  ])
 
-  // Авторизация через соцсети
-  // server.auth.strategy('google', 'bell', {
-  //   provider: 'Google',
-  //   clientId: process.env.auth_google_id,
-  //   clientSecret: process.env.auth_google_secret,
-  //   password: process.env.auth_google_secret,
-  //   isSecure: false
-  // });
-  // server.auth.strategy('fb', 'bell', {
-  //   provider: 'Facebook',
-  //   clientId: Number(process.env.auth_fb_id),
-  //   clientSecret: process.env.auth_fb_secret,
-  //   password: process.env.auth_fb_cookie_password,
-  //   isSecure: false
-  // });
-  // server.auth.strategy('vk', 'bell', {
-  //   provider: 'VK',
-  //   clientId: Number(process.env.auth_vk_id),
-  //   clientSecret: process.env.auth_vk_secret,
-  //   password: process.env.auth_vk_cookie_password,
-  //   isSecure: false
-  // });
+  await server.register<DatabaseOptions>({
+    plugin: Database,
+    options: { test: true } /* {
+      dialect: 'postgres',
+      host: '',
+      database: '',
+      username: '',
+      password: '',
+      port: 5432
+    } */
+  })
 
-  // Авторизация стандартная (логин+пароль)
-  // server.auth.strategy('simple', 'basic', { validate: basicAuthHandler });
-
-  // JWT Auth
-  server.auth.strategy('jwt-access', 'bearer-access-token', {
-    validate: tokenValidate('access'),
-  });
-  server.auth.strategy('jwt-refresh', 'bearer-access-token', {
-    validate: tokenValidate('refresh'),
-  });
-  server.auth.default('jwt-access');
-
-  // Загружаем маршруты
-  server.route(routes);
-  // Error handler
-  server.ext('onPreResponse', responseHandler);
   await server.register({
     plugin: HapiPulse,
     options: {
       timeout: 15000,
-      signals: ['SIGINT'],
-    },
-  });
-  // Enable CORS (Do it last required!)
+      signals: ['SIGINT']
+    }
+  })
+
   await server.register({
-    plugin: HapiCors,
-    options: config.cors,
-  });
-  // Запускаем сервер
-  try {
-    await server.start();
-    server.log('info', `Server running at: ${server.info.uri}`);
-  }
-  catch (err) {
-    server.log('error', JSON.stringify(err));
-  }
+    plugin: Logger
+  })
 
-  return server;
-};
+  /* Auth module must be registered before Api module */
+  await server.register({
+    plugin: Auth,
+    options: {
+      jwtTokenSecret: config.Auth.secret,
+      jwtTokenLifetime: config.Auth.jwt_lifetime,
+      jwtRefreshTokenSecret: config.Auth.refresh_secret,
+      jwtRefreshTokenLifetime: config.Auth.jwt_refresh_lifetime
+    }
+  })
 
-export { init, };
+  await server.register({
+    plugin: Api,
+    options: {}
+  })
+
+  await server.register({
+    /* Write unit tests to test websockets or
+     * use https://mdenushev.github.io/nes-cli/
+     * to test ws connections
+     */
+    plugin: Websocket,
+    options: {},
+    routes: {
+      prefix: '/ws'
+    }
+  })
+
+  return server
+}

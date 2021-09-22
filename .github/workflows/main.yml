@@ -50,9 +50,17 @@ jobs:
           chmod 700 ci-scripts
           cd ci-scripts
           ansible-playbook -i "${{ secrets.REMOTE_HOST }}" -e "ansible_user=${{ secrets.REMOTE_USER }} \
-            DB_LINK=${{ secrets.DB_LINK }} \
-            JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }} \
-            JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} \
-            SERVER_HOST=${{ secrets.SERVER_HOST }} \
-            SERVER_PORT=${{ secrets.SERVER_PORT }} \
+            NODE_ENV=development \
+            HOST=${{ secrets.SERVER_HOST }} \
+            PORT=${{ secrets.SERVER_PORT } \
+            AUTH_JWT_SECRET=${{ secrets.JWT_ACCESS_SECRET }} \
+            AUTH_JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} \
+            AUTH_JWT_LIFETIME=86400 \
+            AUTH_JWT_REFRESH_LIFETIME=604800 \
+            DATABASE_HOST=${{ secrets.DATABASE_HOST }} \
+            DATABASE_PORT=${{ secrets.DATABASE_PORT }} \
+            DATABASE_NAME=${{ secrets.DATABASE_NAME }} \
+            DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }} \
+            DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} \
             SRC_DIR=${{ github.workspace }}/" backend-update.yml;
+
