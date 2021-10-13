@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize-typescript'
 import { Plugin, Server } from '@hapi/hapi'
 import * as pkg from '../../package.json'
-import { createUser, getUser, isUniqueEmailAddress, UserModel } from './user'
+import { StudentModel, getStudents, getStudent, getAverageFaculty, getMinMaxAverageGrade, editStudent } from './student'
 
 export type DatabaseOptions = Partial<{
   /**
@@ -37,7 +37,7 @@ export type DatabaseOptions = Partial<{
   /**
    * database dialect
    */
-  dialect: 'postgres' | 'sqlite' /* currently supported */
+  dialect: 'postgres' | 'sqlite' | 'mysql' /* currently supported */
 }>
 
 export const Database: Plugin<DatabaseOptions> = {
@@ -47,7 +47,7 @@ export const Database: Plugin<DatabaseOptions> = {
     let sequelize: Sequelize
     if (options.test) {
       sequelize = new Sequelize('sqlite::memory:', {
-        models: [UserModel],
+        models: [StudentModel],
         logging: false,
         sync: {
           force: true,
@@ -58,13 +58,15 @@ export const Database: Plugin<DatabaseOptions> = {
     } else {
       sequelize = new Sequelize({
         ...options,
-        models: [UserModel]
+        models: [StudentModel]
       })
     }
 
     server.expose(sequelize)
-    server.method(createUser.name, createUser)
-    server.method(getUser.name, getUser)
-    server.method(isUniqueEmailAddress.name, isUniqueEmailAddress)
+    server.method(getStudents.name, getStudents)
+    server.method(getStudent.name, getStudent)
+    server.method(getAverageFaculty.name, getAverageFaculty)
+    server.method(getMinMaxAverageGrade.name, getMinMaxAverageGrade)
+    server.method(editStudent.name, editStudent)
   }
 }

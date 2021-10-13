@@ -14,24 +14,33 @@ type Response = {
 
 export const responseFilter = (request: Request, h: ResponseToolkit, err?: Error | undefined): ResponseObject | symbol => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { source: payload, isBoom, stack, output, statusCode } = request.response as any
+  const { source: payload, output, statusCode } = request.response as any
+
+  let status:number
+
+  if (statusCode) {
+    status = statusCode
+  }
+
+  if (output && output.statusCode) {
+    status = output.statusCode
+  }
 
   /* handler throws error */
-  if (isBoom) {
+  if (!payload) {
     const response : Response = {
       ok: false,
       result: {
-        error: request.response.message,
-        stacktrace: stack
+        error: request.response.message
       }
     }
 
-    return h.response(response).code(output.statusCode)
+    return h.response(response).code(status)
   }
 
   /* all good responses goes through this call */
   return h.response({
     ok: true,
     result: payload
-  }).code(statusCode)
+  }).code(status)
 }
