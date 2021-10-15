@@ -20,15 +20,15 @@ export const StudentSchema = (): Joi.ObjectSchema<StudentDto> =>
     lastName: Joi.string(),
     sex: Joi.string(),
     phone: Joi.string(),
-    faculty: Joi.string()
+    facultyId: Joi.string().uuid()
   }).label('Student')
 
 export const MinMaxAverageSchema = (): Joi.ObjectSchema<StudentDto> => Joi.object({
-  faculty: Joi.string().required(),
+  facultyId: Joi.string().required(),
   sex: Joi.string().required()
 }).label('MinMaxAverage')
 
-export type AverageDto = Pick<StudentDto, 'faculty' >
-export type AverageMinMaxDto = Pick<StudentDto, 'faculty' | 'sex' >
+export type AverageDto = Pick<StudentDto, 'facultyId' >
+export type AverageMinMaxDto = Pick<StudentDto, 'facultyId' | 'sex' >
 export type CreateStudentDto = Omit<StudentDto, 'id' |'createdAt' | 'updatedAt'>
 export type UpdateStudentDto = Partial<CreateStudentDto>

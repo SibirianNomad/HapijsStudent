@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize-typescript'
 import { Plugin, Server } from '@hapi/hapi'
 import * as pkg from '../../package.json'
 import { StudentModel, getStudents, getStudent, getAverageFaculty, getMinMaxAverageGrade, editStudent } from './student'
+import { FacultyModel, getFaculty } from './faculty'
 
 export type DatabaseOptions = Partial<{
   /**
@@ -47,7 +48,7 @@ export const Database: Plugin<DatabaseOptions> = {
     let sequelize: Sequelize
     if (options.test) {
       sequelize = new Sequelize('sqlite::memory:', {
-        models: [StudentModel],
+        models: [StudentModel, FacultyModel],
         logging: false,
         sync: {
           force: true,
@@ -58,7 +59,7 @@ export const Database: Plugin<DatabaseOptions> = {
     } else {
       sequelize = new Sequelize({
         ...options,
-        models: [StudentModel]
+        models: [StudentModel, FacultyModel]
       })
     }
 
@@ -67,6 +68,7 @@ export const Database: Plugin<DatabaseOptions> = {
     server.method(getStudent.name, getStudent)
     server.method(getAverageFaculty.name, getAverageFaculty)
     server.method(getMinMaxAverageGrade.name, getMinMaxAverageGrade)
+    server.method(getFaculty.name, getFaculty)
     server.method(editStudent.name, editStudent)
   }
 }

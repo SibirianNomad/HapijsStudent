@@ -4,7 +4,6 @@ import * as Vision from '@hapi/vision'
 import * as HapiPulse from 'hapi-pulse'
 import * as Qs from 'qs'
 import { Api } from '../api'
-import { Auth } from '../auth'
 import * as config from '../config'
 import { Database, DatabaseOptions } from '../database'
 import { Logger } from '../logger'
@@ -60,17 +59,6 @@ export const createServer = async (): Promise<Hapi.Server> => {
 
   await server.register({
     plugin: Logger
-  })
-
-  /* Auth module must be registered before Api module */
-  await server.register({
-    plugin: Auth,
-    options: {
-      jwtTokenSecret: config.Auth.secret,
-      jwtTokenLifetime: config.Auth.jwt_lifetime,
-      jwtRefreshTokenSecret: config.Auth.refresh_secret,
-      jwtRefreshTokenLifetime: config.Auth.jwt_refresh_lifetime
-    }
   })
 
   await server.register({

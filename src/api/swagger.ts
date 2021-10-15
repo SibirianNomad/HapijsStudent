@@ -9,22 +9,6 @@ export const swaggerOptions: RegisterOptions = {
     description:
       'API Documentation'
   },
-  securityDefinitions: {
-    Bearer: {
-      type: 'apiKey',
-      name: 'Authorization',
-      in: 'header',
-      'x-keyPrefix': 'Bearer '
-    },
-    basic: {
-      type: 'basic'
-    }
-  },
-  security: [
-    {
-      Bearer: []
-    }
-  ],
   jsonPath: '/documentation.json',
   documentationPath: '/documentation',
   debug: true

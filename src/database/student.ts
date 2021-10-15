@@ -1,15 +1,18 @@
 import {
   Column,
-  CreatedAt,
   DataType,
   Default,
   Model,
   PrimaryKey,
   Scopes,
   Table,
-  UpdatedAt
+  UpdatedAt,
+  BelongsTo,
+  ForeignKey,
+  CreatedAt
 } from 'sequelize-typescript'
 import * as uuid from 'uuid'
+import { FacultyModel, FacultyDto } from './faculty'
 
 /**
  * student data model
@@ -20,7 +23,7 @@ export interface StudentDto {
   lastName:string,
   sex:string,
   phone:string,
-  faculty:string,
+  facultyId:string,
   averageGrade:Float32Array,
   createdAt: Date
   updatedAt: Date
@@ -35,7 +38,7 @@ export interface StudentDto {
 }))
 
 @Table({
-  tableName: 'students'
+  tableName: 'Students'
 })
 export class StudentModel extends Model<StudentDto> implements StudentDto {
   @Default(uuid.v4())
@@ -55,8 +58,9 @@ export class StudentModel extends Model<StudentDto> implements StudentDto {
   @Column(DataType.STRING)
   phone: string
 
+  @ForeignKey(() => FacultyModel)
   @Column(DataType.STRING)
-  faculty: string
+  facultyId: string
 
   @Column(DataType.FLOAT)
   averageGrade: Float32Array
@@ -66,16 +70,21 @@ export class StudentModel extends Model<StudentDto> implements StudentDto {
 
   @UpdatedAt
   updatedAt: Date
+
+  @BelongsTo(() => FacultyModel, 'facultyId') faculty: FacultyModel;
 }
 const Op = require('sequelize').Op
 
-export const getStudents = async (faculty?: Pick<StudentDto, 'faculty'>) => {
+export const getStudents = async (facultyId?: Pick<StudentDto, 'facultyId'>): Promise<StudentDto[]> => {
   return await StudentModel.findAll({
     order: [
       ['averageGrade', 'DESC']
     ],
     where: {
-      faculty: faculty || { [Op.ne]: null }
+      facultyId: facultyId || { [Op.ne]: null }
+    },
+    include: {
+      model: FacultyModel
     }
   })
 }
@@ -88,41 +97,46 @@ export const getStudent = async (id: Pick<StudentDto, 'id'>): Promise<StudentDto
   })
 }
 
-export const getAverageFaculty = async (faculty: Pick<StudentDto, 'faculty'>) => {
+export const getAverageFaculty = async (facultyId: Pick<StudentDto, 'facultyId'>):Promise<Object> => {
   const numberStudents:number = await StudentModel.count({
     where: {
-      faculty: faculty
+      facultyId: facultyId
     }
   })
   const sum:number = await StudentModel.sum('averageGrade', {
     where: {
-      faculty: faculty
+      facultyId: facultyId
     }
   })
-  return (sum / numberStudents).toFixed(2)
+
+  return {
+    averageGrade_by_faculty: (sum / numberStudents).toFixed(2)
+  }
 }
 
-export const getMinMaxAverageGrade = async (faculty: Pick<StudentDto, 'faculty'>, sex: Pick<StudentDto, 'sex'>) => {
+export const getMinMaxAverageGrade = async (facultyId: Pick<StudentDto, 'facultyId'>, sex: Pick<StudentDto, 'sex'>, faculty: Pick<FacultyDto, 'id' | 'name'>):Promise<Object> => {
   const minAverageGrade:number = await StudentModel.min('averageGrade', {
     where: {
-      faculty: faculty,
+      facultyId: facultyId,
       sex: sex
     }
   })
   const maxAverageGrade:number = await StudentModel.max('averageGrade', {
     where: {
-      faculty: faculty,
+      facultyId: facultyId,
       sex: sex
     }
   })
 
   return {
-    min: minAverageGrade,
-    max: maxAverageGrade
+    faculty: faculty.name,
+    sex: sex,
+    min_averageGrade: minAverageGrade,
+    max_averageGrade: maxAverageGrade
   }
 }
 
-export const editStudent = async (id: Pick<StudentDto, 'id'>, dataStudent: Omit<StudentDto, 'id'>) => {
+export const editStudent = async (id: Pick<StudentDto, 'id'>, dataStudent: Omit<StudentDto, 'id'>):Promise<Object> => {
   const result = await StudentModel.update(
     dataStudent,
     { where: { id: id } }
