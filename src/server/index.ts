@@ -41,10 +41,10 @@ export const createServer = async (): Promise<Hapi.Server> => {
     plugin: Database,
     options: {
       dialect: 'mysql',
-      host: 'localhost',
-      database: 'database_development',
-      username: 'root',
-      password: 'qwe',
+      host: config.Server.db_host,
+      database: config.Server.db_name,
+      username: config.Server.db_user,
+      password: config.Server.db_pass,
       port: 3306
     }
   })

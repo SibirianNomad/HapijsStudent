@@ -13,7 +13,7 @@ export const ResponseSchema = <T>(): Joi.ObjectSchema<Response<T>> =>
     result: Joi.object<T>()
   })
 
-export const StudentSchema = (): Joi.ObjectSchema<StudentDto> =>
+export const StudentsSchema = (): Joi.ObjectSchema<StudentDto> =>
   Joi.object<Omit<StudentDto, 'createdAt' | 'updatedAt'>>({
     id: Joi.string().uuid(),
     firstName: Joi.string(),
@@ -21,12 +21,17 @@ export const StudentSchema = (): Joi.ObjectSchema<StudentDto> =>
     sex: Joi.string(),
     phone: Joi.string(),
     facultyId: Joi.string().uuid()
-  }).label('Student')
+  }).label('Students')
 
 export const MinMaxAverageSchema = (): Joi.ObjectSchema<StudentDto> => Joi.object({
-  facultyId: Joi.string().required(),
-  sex: Joi.string().required()
+  facultyId: Joi.string().required().example('823a05a7-df0a-4ebc-8fee-c91f8ae93a63'),
+  sex: Joi.string().valid('male', 'female').required().example('male')
 }).label('MinMaxAverage')
+
+export const StudentSchema =
+Joi.object({
+  id: Joi.string().uuid().required().example('823a05a7-df0a-4ebc-8fee-c91f8ae93a63')
+}).label('Student')
 
 export type AverageDto = Pick<StudentDto, 'facultyId' >
 export type AverageMinMaxDto = Pick<StudentDto, 'facultyId' | 'sex' >

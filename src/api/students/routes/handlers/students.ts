@@ -13,7 +13,7 @@ export const getStudents = async (request: Request, reply: ResponseToolkit): Pro
     return reply.response(students).code(200)
   }
 
-  return reply.response().code(404).message('Faculty not found')
+  return reply.response('Faculty not found').code(404)
 }
 
 export const getStudent = async (request: Request, reply: ResponseToolkit): Promise<ResponseObject> => {
@@ -27,7 +27,7 @@ export const getStudent = async (request: Request, reply: ResponseToolkit): Prom
     return reply.response(student).code(200)
   }
 
-  return reply.response().code(404).message('Student not found')
+  return reply.response('Student not found').code(404)
 }
 
 export const getAverageFaculty = async (request: Request, reply: ResponseToolkit): Promise<ResponseObject> => {
@@ -52,7 +52,7 @@ export const getMinMaxAverageGrade = async (request: Request, reply: ResponseToo
   const faculty = await getFaculty(facultyId)
 
   if (!faculty) {
-    return reply.response().code(404)
+    return reply.response('Faculty not found').code(404)
   }
 
   const { getMinMaxAverageGrade } = request.server.methods
@@ -66,8 +66,13 @@ export const editStudent = async (request: Request, reply: ResponseToolkit): Pro
   const { firstName, lastName, sex, phone, facultyId, averageGrade } = request.payload as UpdateStudentDto
   const id = request.params.id
 
-  const { editStudent } = request.server.methods
+  const { editStudent, getStudent } = request.server.methods
 
+  const student = await getStudent(id)
+
+  if (!student) {
+    return reply.response('Student not found').code(404)
+  }
   const result = await editStudent(id,
     {
       firstName,
