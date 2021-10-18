@@ -2,12 +2,12 @@
 const DataTypes = require('sequelize').DataTypes;
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('students', {
+    await queryInterface.createTable('Students', {
       id: {
         primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: DataTypes.UUIDV4,
-        allowNull: true
+        allowNull: false
       },
       firstName: {
         type: Sequelize.STRING,
@@ -18,13 +18,15 @@ module.exports = {
         allowNull: false
       },
       sex:{
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       phone:{
         type: Sequelize.STRING
       },
-      faculty:{
-        type: Sequelize.STRING
+      facultyId:{
+        type: Sequelize.UUID,
+        allowNull: false
       },
       averageGrade:{
         type: Sequelize.FLOAT
@@ -38,14 +40,21 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
+    await queryInterface.addConstraint('Students', {
+      type: 'FOREIGN KEY',
+      name: 'Students_facultyId_fkey',
+      fields: ['facultyId'],
+      references: {
+          table: 'Faculties',
+          field: 'id'
+      },
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
+    });
   },
 
   down: async (queryInterface, Sequelize) => {
-    /**
-     * Add reverting commands here.
-     *
-     * Example:
-     * await queryInterface.dropTable('users');
-     */
+    await queryInterface.removeConstraint('Students', 'Students_facultyId_fkey');
+    return queryInterface.dropTable('Students')
   }
 };

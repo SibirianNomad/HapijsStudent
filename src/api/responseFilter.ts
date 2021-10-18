@@ -14,7 +14,7 @@ type Response = {
 
 export const responseFilter = (request: Request, h: ResponseToolkit, err?: Error | undefined): ResponseObject | symbol => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { source: payload, output, statusCode } = request.response as any
+  const { source: payload, output, statusCode, message } = request.response as any
 
   let status:number
 
@@ -31,7 +31,7 @@ export const responseFilter = (request: Request, h: ResponseToolkit, err?: Error
     const response : Response = {
       ok: false,
       result: {
-        error: request.response.message
+        error: message
       }
     }
 
