@@ -13,14 +13,14 @@ export const ResponseSchema = <T>(): Joi.ObjectSchema<Response<T>> =>
     result: Joi.object<T>()
   })
 
-export const StudentsSchema = (): Joi.ObjectSchema<StudentDto> =>
+export const UpdateStudentSchema = (): Joi.ObjectSchema<StudentDto> =>
   Joi.object<Omit<StudentDto, 'createdAt' | 'updatedAt'>>({
-    id: Joi.string().uuid(),
-    firstName: Joi.string(),
-    lastName: Joi.string(),
-    sex: Joi.string(),
-    phone: Joi.string(),
-    facultyId: Joi.string().uuid()
+    id: Joi.string().uuid().example('00c83791-7b78-4e9e-a7c3-84823cdc6b1c'),
+    firstName: Joi.string().example('firstName'),
+    lastName: Joi.string().example('lastName'),
+    sex: Joi.string().example('male'),
+    phone: Joi.string().example('89234290849'),
+    facultyId: Joi.string().uuid().example('1ea7e618-5cd2-418c-9b47-d25853086e9a')
   }).label('Students')
 
 export const MinMaxAverageSchema = (): Joi.ObjectSchema<StudentDto> => Joi.object({
