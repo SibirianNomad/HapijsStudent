@@ -1,7 +1,7 @@
 import { ServerRoute } from '@hapi/hapi'
 import * as students from './handlers/students'
 import { responseFilter } from '../../responseFilter'
-import { MinMaxAverageSchema, StudentSchema } from '../schemes'
+import { MinMaxAverageSchema, StudentSchema, UpdateStudentSchema } from '../schemes'
 import * as Joi from 'joi'
 
 export const getStudents:ServerRoute = {
@@ -56,7 +56,8 @@ export const editStudent: ServerRoute = {
     tags: ['api', 'students'],
     validate: {
       failAction: ('error'),
-      params: StudentSchema
+      params: StudentSchema,
+      payload: UpdateStudentSchema()
     },
     ext: {
       onPreResponse: {
