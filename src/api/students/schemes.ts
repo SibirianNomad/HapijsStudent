@@ -24,7 +24,7 @@ export const UpdateStudentSchema = (): Joi.ObjectSchema<StudentDto> =>
   }).label('Students')
 
 export const MinMaxAverageSchema = (): Joi.ObjectSchema<StudentDto> => Joi.object({
-  facultyId: Joi.string().required().example('823a05a7-df0a-4ebc-8fee-c91f8ae93a63'),
+  facultyId: Joi.string().uuid().required().example('823a05a7-df0a-4ebc-8fee-c91f8ae93a63'),
   sex: Joi.string().valid('male', 'female').required().example('male')
 }).label('MinMaxAverage')
 
