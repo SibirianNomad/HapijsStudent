@@ -18,7 +18,6 @@ export const getStudents:ServerRoute = {
       }
     },
     validate: {
-      failAction: ('error'),
       query: Joi.object({
         facultyId: Joi.string().uuid()
       })
@@ -35,7 +34,6 @@ export const getStudent: ServerRoute = {
     notes: 'Get student by id',
     tags: ['api', 'students'],
     validate: {
-      failAction: ('error'),
       params: StudentSchema
     },
     ext: {
@@ -55,7 +53,6 @@ export const editStudent: ServerRoute = {
     notes: 'Update data of student by id',
     tags: ['api', 'students'],
     validate: {
-      failAction: ('error'),
       params: StudentSchema,
       payload: UpdateStudentSchema()
     },
@@ -76,7 +73,6 @@ export const getAverageFaculty: ServerRoute = {
     notes: 'Get average grade of faculty',
     tags: ['api', 'faculty'],
     validate: {
-      failAction: ('error'),
       query: Joi.object({
         facultyId: Joi.string().uuid()
       })
@@ -98,10 +94,8 @@ export const getMinMaxAverageGrade: ServerRoute = {
     notes: 'Get min and max average grade by faculty id and sex',
     tags: ['api', 'faculty'],
     validate: {
-      failAction: async (request, h, err) => { return err },
       payload: MinMaxAverageSchema()
     },
-
     ext: {
       onPreResponse: ({
         method: responseFilter
